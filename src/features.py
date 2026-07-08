@@ -21,6 +21,12 @@ LONGER than 14 days are left as NaN rather than inventing a level across a
 data outage. LightGBM consumes NaN natively, so missingness is passed through
 honestly instead of being papered over.
 
+WEATHER (optional): pass weather=<data/weather_daily.parquet frame> to add
+LAGGED weather features per market — trailing 7/14/28d rain sums, trailing
+tmax/tmin means, and days-since-heavy-rain (>25mm). Like every other feature,
+these windows END at the cutoff t; same-week and future weather are never used
+(a real operator would not have them at decision time). See weather.py.
+
 Scope: restricted to pairs marked VIABLE_FOR_MODELING (see pairs.viable_pairs);
 the restriction lives in one place so it cannot drift from evaluate.py.
 
@@ -43,6 +49,8 @@ SW_WIN = 14
 QPOS_WIN = 366           # trailing-year window for the quantile-position feature
 QPOS_MINOBS = 91         # need ~a season of history before a percentile is meaningful
 HORIZON = 7              # predict the next 7 days
+WX_ROLLS = [7, 14, 28]   # trailing weather windows
+HEAVY_RAIN_MM = 25       # "heavy rain" day threshold for days-since-heavy-rain
 
 
 def _minp(window):
@@ -66,7 +74,26 @@ def _qpos(series, win=QPOS_WIN, minobs=QPOS_MINOBS):
     return series.rolling(win, min_periods=minobs).apply(frac_below, raw=True)
 
 
-def _pair_features(g_obs, cutoffs, market_id, commodity_id):
+def _weather_features(wx, index):
+    """Lagged weather features on the daily calendar `index`, all windows
+    ending at the row date (trailing, never future). `wx` is a per-market frame
+    indexed by date with columns rain_mm/tmax/tmin."""
+    w = wx.reindex(index)
+    rain, tmax, tmin = w["rain_mm"], w["tmax"], w["tmin"]
+    out = pd.DataFrame(index=index)
+    for W in WX_ROLLS:
+        mp = max(3, W // 2)
+        out[f"rain_sum{W}"] = rain.rolling(W, min_periods=mp).sum()
+        out[f"tmax_mean{W}"] = tmax.rolling(W, min_periods=mp).mean()
+        out[f"tmin_mean{W}"] = tmin.rolling(W, min_periods=mp).mean()
+    # days since the most recent heavy-rain (>25mm) day, up to and including t
+    dates = pd.Series(index, index=index)
+    last_heavy = dates.where((rain > HEAVY_RAIN_MM).to_numpy()).ffill()
+    out["days_since_heavy_rain"] = (dates - last_heavy).dt.days
+    return out
+
+
+def _pair_features(g_obs, cutoffs, market_id, commodity_id, wx=None):
     """Build one feature row per cutoff for a single (market, commodity)."""
     g_obs = g_obs.set_index("date").sort_index()
     g_obs = g_obs[~g_obs.index.duplicated(keep="first")]  # panel is unique, be safe
@@ -101,6 +128,10 @@ def _pair_features(g_obs, cutoffs, market_id, commodity_id):
     # trailing-year percentile positions (mirror the flag thresholds)
     f["price_qpos365"] = _qpos(price)
     f["arr_qpos365"] = _qpos(arr)
+
+    # optional lagged weather (trailing windows only)
+    if wx is not None:
+        f = f.join(_weather_features(wx, daily.index))
 
     # sample at the cutoff dates
     idx = pd.DatetimeIndex(cutoffs)
@@ -140,24 +171,39 @@ def default_cutoffs(panel, min_train_days=730, step_days=7):
 
 
 def make_features(panel, cutoffs, report_path="reports/quality_report.json",
-                  config_path="config.yaml"):
+                  config_path="config.yaml", weather=None):
     """Supervised weekly table over VIABLE pairs. Importable by evaluate.py.
 
     One row per (cutoff, market_id, commodity_id): trailing feature columns +
     next-week target columns. Rows with no next-week observation (no target)
     are dropped; rows with no usable recent data (no current level within the
     fill window) are dropped too — a prediction there would be pure guess.
+
+    weather: optional data/weather_daily.parquet frame [date, market_id,
+    rain_mm, tmax, tmin]. When given, per-market LAGGED weather features are
+    appended. Row set is unchanged (weather never adds/drops rows), so a
+    with-weather table lines up fold-for-fold with a without-weather table.
     """
     panel = panel.copy()
     panel["date"] = pd.to_datetime(panel["date"])
     ok = set(viable_pairs(report_path, config_path))
+
+    wx_by_market = {}
+    if weather is not None:
+        weather = weather.copy()
+        weather["date"] = pd.to_datetime(weather["date"])
+        for mid, wg in weather.groupby("market_id"):
+            wx_by_market[int(mid)] = (wg.drop_duplicates("date")
+                                      .set_index("date")[["rain_mm", "tmax", "tmin"]]
+                                      .sort_index())
 
     frames = []
     for (m, c), g in panel.groupby(["market_id", "commodity_id"]):
         if (int(m), int(c)) not in ok:
             continue
         frames.append(_pair_features(g[["date", "modal_price", "arrivals"]],
-                                     cutoffs, int(m), int(c)))
+                                     cutoffs, int(m), int(c),
+                                     wx=wx_by_market.get(int(m))))
     if not frames:
         raise SystemExit("No viable pairs produced features — check quality_report.json.")
 

@@ -19,10 +19,13 @@ labels:
   hi_quantile: 0.90
   lo_quantile: 0.10
 
-commodity_names: {23: Onion}
+commodity_names: {23: Onion, 78: Tomato, 24: Potato}
 
-# Onion=23, Maharashtra=27, Nashik district=516
+# ids (verified via /agmarknet discovery): Onion=23 Tomato=78 Potato=24
+#   Maharashtra state=27 | Nashik district=516 | Pune district=521
+#   Pune markets: Pune(main yard)=172, Pune(Moshi)=4752
 backfill_targets:
+  # --- Milestone 1: Onion @ Nashik (already backfilled/cached) ---
   - {commodity_id: 23, commodity_name: Onion, state_id: 27,
      district_id: 516, market_id: 169, market_name: "Lasalgaon"}
   - {commodity_id: 23, commodity_name: Onion, state_id: 27,
@@ -31,3 +34,25 @@ backfill_targets:
      district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
   - {commodity_id: 23, commodity_name: Onion, state_id: 27,
      district_id: 516, market_id: 2488, market_name: "Pimpalgaon Baswant(Saykheda)"}
+  # --- Task 3 widening: Tomato + Potato @ the two OK Nashik markets ---
+  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
+     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
+  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
+     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
+  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
+     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
+  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
+     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
+  # --- Task 3 widening: Onion + Tomato + Potato @ two major Pune markets ---
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 521, market_id: 172, market_name: "Pune"}
+  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
+     district_id: 521, market_id: 172, market_name: "Pune"}
+  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
+     district_id: 521, market_id: 172, market_name: "Pune"}
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
+  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
+     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
+  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
+     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
