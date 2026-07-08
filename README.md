@@ -42,10 +42,19 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
   the numbers within noise (price MAE +4, arrivals MAE −64, shortage F1 −0.06
   vs plain `lgbm`). For onion at a weekly horizon the price/arrival
   autoregressive features already carry the seasonal signal. Reported as found.
-- **Spoilage flags are not learnable here.** Only 6 spoilage events occur in
-  750 folds; neither model predicts a true positive. This is stated, not hidden
-  — with base rates ~1–3% (below), flag P/R/F1 is the honest metric, and the
-  tails are genuinely sparse.
+- **Spoilage flags are not learnable here — and we know exactly why.** Only 6
+  spoilage events occur in 750 folds; neither model predicts a true positive.
+  `src/diagnostics.py` (→ `reports/spoilage_diagnostics.md`) traces the cause:
+  spoilage is a compound tail (arrivals in the top decile AND price in the
+  bottom decile), and a mean regressor predicts near the centre (median
+  arrivals-percentile 0.33, price 0.49), so it never satisfies the double-AND.
+  A principled tail-aware fix — a LightGBM **quantile head** (arrivals α=0.90,
+  price α=0.10, α set to the flag's own deciles, not tuned) — gets the **price
+  crash right on 5/6 events but the arrivals spike on 0/6**: the arrivals spike
+  is close to unpredictable a week ahead from price/arrival history. So the
+  binding constraints are (1) event scarcity (~6 positives) and (2) an
+  unpredictable arrivals spike — the durable fix is **more markets** (Pune
+  widening), not more model. Reported as found.
 
 Historical label base rates (`python src/labels.py`, trailing-quantile labels):
 Onion@169 spoilage 2.28% / shortage 2.24%; Onion@4750 spoilage 1.13% /
@@ -98,6 +107,10 @@ python src/weather.py --from-year 2006
 # 3. Features + evaluation (writes reports/model_comparison.md)
 python src/features.py                    # -> data/features_weekly.parquet + leakage self-check
 python src/evaluate.py                    # seasonal_naive vs lgbm vs lgbm_weather
+
+# 4. Optional: invariant tests + spoilage root-cause diagnostics
+python tests/test_invariants.py           # leakage, scale, pairs, weather trailing-only
+python src/diagnostics.py                 # -> reports/spoilage_diagnostics.md
 ```
 
 Data source: CEDA (Ashoka University) Agri Market API — cleaned mirror of

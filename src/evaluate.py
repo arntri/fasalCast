@@ -90,7 +90,7 @@ class LgbmForecaster:
     K_RETRAIN = 26
     MIN_TRAIN_ROWS = 100          # cold start: no ML predictions until this many
 
-    def __init__(self, feats, k_retrain=K_RETRAIN):
+    def __init__(self, feats, k_retrain=K_RETRAIN, arr_params=None, prc_params=None):
         feats = feats.reset_index(drop=True).copy()
         # fixed category dtypes so codes are identical across train/predict slices
         for col in ("market_id", "commodity_id"):
@@ -98,6 +98,11 @@ class LgbmForecaster:
                 pd.CategoricalDtype(categories=sorted(feats[col].unique())))
         self.feats = feats
         self.k = k_retrain
+        # per-target params default to the mean-regression PARAMS; overrides let
+        # the same machinery serve a quantile head (see diagnostics.py) without
+        # changing the retrain cadence or leakage discipline.
+        self.arr_params = {**self.PARAMS, **(arr_params or {})}
+        self.prc_params = {**self.PARAMS, **(prc_params or {})}
         self.feat_cols = [c for c in feats.columns
                           if c not in ("cutoff", "target_arrivals", "target_price")]
         self._by_cutoff = {t: g for t, g in feats.groupby("cutoff")}
@@ -113,8 +118,8 @@ class LgbmForecaster:
         X = eligible[self.feat_cols]
         d_arr = lgb.Dataset(X, label=eligible["target_arrivals"], free_raw_data=False)
         d_prc = lgb.Dataset(X, label=eligible["target_price"], free_raw_data=False)
-        self._m_arr = lgb.train(self.PARAMS, d_arr, num_boost_round=self.NUM_ROUNDS)
-        self._m_prc = lgb.train(self.PARAMS, d_prc, num_boost_round=self.NUM_ROUNDS)
+        self._m_arr = lgb.train(self.arr_params, d_arr, num_boost_round=self.NUM_ROUNDS)
+        self._m_prc = lgb.train(self.prc_params, d_prc, num_boost_round=self.NUM_ROUNDS)
         self.last_train = (cutoff, len(eligible))
 
     def __call__(self, history, pairs, cutoff):
