@@ -1,0 +1,33 @@
+scope:
+  state: Maharashtra
+  crops: [Onion, Tomato, Potato]
+  markets: [Lasalgaon, Pimpalgaon Baswant, Pune, Nashik]
+
+validation:
+  min_coverage: 0.60
+  min_rows: 500
+  max_daily_price_jump: 1.0
+  unit_shift_factor: 8.0
+  price_bounds:
+    Onion:  [50, 20000]
+    Tomato: [50, 20000]
+    Potato: [50, 15000]
+
+labels:
+  trailing_window_days: 365
+  min_obs: 90
+  hi_quantile: 0.90
+  lo_quantile: 0.10
+
+commodity_names: {23: Onion}
+
+# Onion=23, Maharashtra=27, Nashik district=516
+backfill_targets:
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 516, market_id: 2484, market_name: "Lasalgaon(Niphad)"}
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
+  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
+     district_id: 516, market_id: 2488, market_name: "Pimpalgaon Baswant(Saykheda)"}
