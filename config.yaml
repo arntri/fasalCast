@@ -21,6 +21,30 @@ labels:
 
 commodity_names: {23: Onion, 78: Tomato, 24: Potato}
 
+# --- Crop groups: the basket unit (Scope-Correction Task 1) --------------------
+# A "group" is one physical commodity that may appear under several catalogue
+# ids. Each STATE contributes whichever group MEMBER it actually reports (e.g.
+# MP files paddy id 2, Maharashtra files rice id 3 — see select_markets.py
+# resolve_groups, which keeps the denser member per state). The 8 groups below
+# are the basket; all but rice/redgram map 1:1 for now.
+#
+# MILLING-MARGIN CAVEAT (binding): paddy (unmilled) and rice (milled) sit at
+# DIFFERENT price LEVELS (rice ≈ paddy × milling yield + margin). NEVER average
+# raw paddy and rice prices together. Group aggregation happens ONLY at the
+# already unit-free stress/z-score level — each SERIES (market, commodity) is
+# z-scored against its OWN trailing history first, so mixed members are safe by
+# construction. (TODO: move this caveat into basket.py's docstring when the
+# basket layer is built at T3 — deferred per Scope-Correction scope decision.)
+crop_groups:
+  rice:       [3, 2]     # Rice(3) + Paddy(Dhan)(Common)(2)   -- milling caveat above
+  wheat:      [1]
+  onion:      [23]
+  potato:     [24]
+  tomato:     [78]
+  bengalgram: [6]        # Bengal Gram(Gram)(Whole) — chana
+  mustard:    [12]
+  redgram:    [7, 49]    # Red Gram(7) + Arhar(Tur/Red Gram)(Whole)(49)
+
 # ids (verified via /agmarknet discovery): Onion=23 Tomato=78 Potato=24
 #   Maharashtra state=27 | Nashik district=516 | Pune district=521
 #   Pune markets: Pune(main yard)=172, Pune(Moshi)=4752
