@@ -20,6 +20,7 @@ import pandas as pd
 import yaml
 
 from ceda_client import CedaClient, CedaError
+import pair_health
 
 RAW = Path("data/raw")
 
@@ -130,6 +131,13 @@ def main():
           f"endpoints = {total} chunks."
           + (f"  budget={args.budget} new fetches." if args.budget else ""))
 
+    stats = pair_health.load()
+    # Slow/troubled pairs last (red gram last of all) so they cannot starve the rest.
+    targets = pair_health.order_last(
+        targets, lambda t: t["commodity_id"],
+        lambda t: pair_health.pair_key(t["commodity_id"], t["market_id"]), stats)
+    delta = {}
+
     stop = False
     for t in targets:
         if stop:
@@ -145,6 +153,11 @@ def main():
                 if n is None:
                     continue  # cached — free, not counted against budget
                 fetched += 1
+                d = delta.setdefault(
+                    pair_health.pair_key(t["commodity_id"], t["market_id"]),
+                    {"attempts": 0, "failures": 0, "label": label})
+                d["attempts"] += 1
+                d["failures"] += n == -1
                 status = "FAIL (will retry on next run)" if n == -1 else f"{n} recs"
                 print(f"  [{done}/{total}] {label} {year} {kind}: {status}")
                 if args.budget is not None and fetched >= args.budget:
@@ -152,6 +165,9 @@ def main():
                           f"pausing. Re-run the same command to continue.")
                     stop = True
                     break
+
+    pair_health.merge_save(delta)
+    print("\n" + pair_health.summary(pair_health.load()))
 
     if sharded:
         print(f"\nShard {args.shard} done ({fetched} new fetches). Combine is "

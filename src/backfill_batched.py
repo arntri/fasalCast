@@ -50,6 +50,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ceda_client import CedaClient, CedaError  # noqa: E402
+import pair_health  # noqa: E402
 
 RAW_BATCHED = Path("data/raw_batched")
 RAW_LEGACY = Path("data/raw")
@@ -140,8 +141,20 @@ class Fleet:
         self.requests = 0
         self.wasted = 0
         self.failed = []
+        self.delta = {}   # pair_health tallies for this run
         self.lock = threading.Lock()
         self.stop = threading.Event()
+
+    def _tally(self, g, failed):
+        """Count one real request toward the (commodity, state) pair's failure
+        rate. 429s are not tallied: that is pacing, not pair health."""
+        with self.lock:
+            d = self.delta.setdefault(
+                pair_health.pair_key(g["commodity_id"], g["state_id"]),
+                {"attempts": 0, "failures": 0,
+                 "label": f"{g['commodity_name']} / {g['state_name']}"})
+            d["attempts"] += 1
+            d["failures"] += bool(failed)
 
     def _advance(self, days, note, wasted=False):
         with self.lock:
@@ -199,6 +212,7 @@ class Fleet:
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(json.dumps(data, default=str))
                 dt = time.monotonic() - t0
+                self._tally(g, False)
                 self.q.put({**job, "cursor": to + timedelta(days=1)})
                 self.q.task_done()
                 self._advance((to - cursor).days + 1,
@@ -216,6 +230,8 @@ class Fleet:
                     next_ok = time.monotonic() + 600
                     continue
 
+                if "429" not in msg:
+                    self._tally(g, True)
                 heavy = ("504" in msg or "502" in msg or "503" in msg
                          or "timeout" in msg.lower())
                 if heavy and span > MIN_SPAN_DAYS:
@@ -319,6 +335,11 @@ def main():
 
     cfg = yaml.safe_load(open(args.config))
     groups = build_groups(cfg, args.targets_key)
+    # Slow/troubled (state, commodity) groups last; red gram last of all.
+    groups = pair_health.order_last(
+        groups, lambda g: g["commodity_id"],
+        lambda g: pair_health.pair_key(g["commodity_id"], g["state_id"]),
+        pair_health.load())
     kinds = [k.strip() for k in args.kinds.split(",") if k.strip()]
 
     start = date(args.from_year, 1, 1)
@@ -353,6 +374,8 @@ def main():
     log(f"Made {fleet.requests:,} requests in {(time.monotonic()-t0)/3600:.2f}h "
         f"({fleet.wasted} wasted on 504-discovery/failures, "
         f"{len(fleet.failed)} windows unrecoverable)")
+    pair_health.merge_save(fleet.delta)
+    log(pair_health.summary(pair_health.load()))
     if fleet.failed:
         Path("logs").mkdir(exist_ok=True)
         Path("logs/batched_failures.tsv").write_text(
