@@ -62,14 +62,55 @@ CROPS = [
 # 6 states (Architecture 2.3). census_state_id — verified equal to the state_id
 # the /markets and /prices endpoints expect (Maharashtra=27, Nashik=516 matched
 # the already-working config).
+# Phase-A geography after Scope-Correction Task 3 (reports/state_qualification.md):
+# dropped Karnataka(29) + Bihar(10) for structural under-reporting, added the two
+# qualified poverty-relevant replacements Chhattisgarh(22) + Rajasthan(8). This is
+# the set the write-config aggregation iterates; it must match watch_progress.py's
+# TARGET_STATES and the qualification report.
 STATES = [
     {"id": 27, "name": "Maharashtra"},
     {"id": 9,  "name": "Uttar Pradesh"},
     {"id": 23, "name": "Madhya Pradesh"},
     {"id": 19, "name": "West Bengal"},
-    {"id": 29, "name": "Karnataka"},
-    {"id": 10, "name": "Bihar"},
+    {"id": 22, "name": "Chhattisgarh"},
+    {"id": 8,  "name": "Rajasthan"},
 ]
+
+# ---- Scope-Correction Task 3: state qualification (PRE-REGISTERED) -----------
+# Phase-A geography is chosen by MEASURED reporting density, not hand-picking.
+# Two states are DROPPED from phase A for STRUCTURAL data reasons (not appetite),
+# and poverty-relevant candidates are probed to replace them. Every threshold
+# below is fixed BEFORE the probe runs — it is NOT tuned to the outcome.
+PHASE_A_EXCLUDE = {
+    10: "Bihar — APMC (regulated mandi) Act repealed 2006; structurally few "
+        "reporting markets. Measured: 4 of 8 crop groups absent, e.g. wheat "
+        "reported by only 6 mandis vs 286 in MP.",
+    29: "Karnataka — most trade flows through the state's own e-market platform "
+        "(ReMS / Unified Market Platform), bypassing central Agmarknet. Measured: "
+        "~37-68 reporting days per mandi per year vs 150-290 in the kept states.",
+}
+
+# Candidates chosen for HIGH poverty / food-insecurity relevance — the mission
+# constraint is to keep poor states in scope, NOT to swap them for data-rich
+# richer ones. Poverty tags are qualitative (NITI National MPI ranking), stated
+# without fabricated precise figures.
+QUALIFY_CANDIDATES = [
+    {"id": 21, "name": "Odisha",       "poverty": "high — persistently poor, eastern rice belt"},
+    {"id": 22, "name": "Chhattisgarh", "poverty": "high — tribal-majority, among India's poorest by MPI"},
+]
+QUALIFY_FALLBACKS = [   # probed ONLY if a primary candidate fails to qualify
+    {"id": 20, "name": "Jharkhand", "poverty": "very high — consistently among the poorest by MPI"},
+    {"id": 8,  "name": "Rajasthan", "poverty": "moderate — large arid agrarian population"},
+]
+
+# Hard probe caps (cost control) + the pre-registered qualification rule.
+QUAL_TOP_DISTRICTS      = 5       # per state, ranked by cereal market count
+QUAL_TOP_MANDIS         = 3       # per district, ranked by cross-group presence
+QUAL_DENSE_RECORDS      = 150     # a mandi is "dense" for a group at >= this many probe-year records
+QUAL_MIN_DENSE_MANDIS   = 5       # a state QUALIFIES with >= this many dense mandis...
+QUAL_MIN_GROUPS_COVERED = 5       # ...that together cover >= this many of the 8 crop groups
+QUAL_REF_CROPS          = [3, 2, 1]   # rank districts by rice(3)+paddy(2)+wheat(1) market count
+                                      # (cereal infrastructure, robust to rice/paddy labeling)
 
 
 class Budget:
@@ -125,10 +166,23 @@ def markets_in(client, crop, state, did, budget):
         mk = cached_call(path, budget,
                          lambda: client.markets(crop["id"], state["id"], did))
     except CedaError as e:
-        # A crop that does not trade in a district often 400s here; treat as
-        # "no markets" rather than aborting the whole probe.
-        print(f"      (markets c{crop['id']} s{state['id']} d{did}: {str(e)[:80]})")
-        path.write_text("[]")
+        msg = str(e)
+        # 400 = crop genuinely does not trade in this district: a real "no
+        # markets" answer, safe to cache [] and move on.
+        if "400" in msg:
+            print(f"      (markets c{crop['id']} s{state['id']} d{did}: no markets)")
+            path.write_text("[]")
+            return []
+        # 401/403 = auth broken: systemic, abort the probe loudly. NEVER cache []
+        # for it — the cache is skip-if-exists, so a poisoned cell is permanent.
+        # (A dead key once wrote 175 empty Paddy cells exactly this way.)
+        if "401" in msg or "403" in msg:
+            raise
+        # Anything else (504/5xx/429/timeout) is a transient server glitch: do
+        # NOT cache (would poison) and do NOT crash the whole probe — skip this
+        # district so a re-run retries it. CEDA's gateway 504s intermittently.
+        print(f"      (markets c{crop['id']} s{state['id']} d{did}: transient "
+              f"{msg[:70]} — skipped, retry on re-run)")
         return []
     return mk or []
 
@@ -239,11 +293,20 @@ def resolve_groups(density):
 
 def build_targets(density, top_k):
     """Flatten ranked density into config backfill_targets (top_k markets per
-    crop-state that actually reported), with district ids recovered from cache."""
+    crop-state that actually reported), with district ids recovered from cache.
+    States in PHASE_A_EXCLUDE (Bihar, Karnataka) are dropped for the structural
+    reasons recorded there — see Scope-Correction Task 3 / state_qualification."""
     targets = []
-    state_name = {s["id"]: s["name"] for s in STATES}
+    # Name map spans the full pool so the phase-A qualified candidates
+    # (Chhattisgarh 22, Rajasthan 8 — which live in QUALIFY_*, not STATES) are
+    # resolvable at aggregation time. Without this the fan-in KeyErrors / silently
+    # drops the two newly-qualified states from backfill targets.
+    state_name = {s["id"]: s["name"]
+                  for s in STATES + QUALIFY_CANDIDATES + QUALIFY_FALLBACKS}
     for (cid, cname, _group), states in density.items():
         for sid, ranked in states.items():
+            if sid in PHASE_A_EXCLUDE:
+                continue          # dropped from phase A (structural, recorded)
             for mid, mname, n in ranked[:top_k]:
                 did = _district_of(cid, sid, mid)
                 targets.append({
@@ -270,6 +333,194 @@ def _district_of(cid, sid, mid):
     return None
 
 
+def load_crop_groups(config_path):
+    """The 8 crop groups (basket unit) from config.yaml -> {group: [ids]}."""
+    cfg = yaml.safe_load(open(config_path)) or {}
+    groups = cfg.get("crop_groups")
+    if not groups:
+        raise SystemExit(f"config {config_path} has no crop_groups (Task 1).")
+    return groups
+
+
+def _qual_prices(client, cid, sid, did, market_ids, year, budget):
+    """Qualification prices probe: ONE cached /prices for a district's chosen
+    mandis, prices only, one year. Separate cache namespace (qual_*) so it never
+    collides with the density probe's whole-district probe_* files. Returns
+    {market_id: record_count}."""
+    path = PROBE / f"qual_c{cid}_s{sid}_d{did}_{year}.json"
+    try:
+        recs = cached_call(
+            path, budget,
+            lambda: client.prices(cid, sid, [did], market_ids,
+                                  f"{year}-01-01", f"{year}-12-31"))
+    except CedaError as e:
+        print(f"      (qual prices c{cid} s{sid} d{did}: {str(e)[:80]})")
+        path.write_text("[]")
+        return {}
+    if not recs:
+        return {}
+    mkey = find_key(recs[0], "market", "id") or "market_id"
+    counts = defaultdict(int)
+    for r in recs:
+        counts[r.get(mkey)] += 1
+    return counts
+
+
+def qualify_one_state(client, st, groups, year, budget):
+    """Run the pre-registered qualification probe for ONE state under the hard
+    caps. Returns a verdict dict. May raise StopIteration if budget runs out
+    (caught upstream; everything cached, so re-run resumes)."""
+    sid, sname = st["id"], st["name"]
+    state = {"id": sid, "name": sname}
+
+    # 1. Rank districts by cereal (ref-crop) market count; keep the top-K.
+    mkts_by_did = defaultdict(dict)          # did -> {mid: mname}
+    for cid in QUAL_REF_CROPS:
+        crop = {"id": cid, "name": f"c{cid}"}
+        by_state = districts_for(client, crop, budget)
+        for did, _dname in by_state.get(sid, []):
+            for m in markets_in(client, crop, state, did, budget):
+                mid = m[find_key(m, "market", "id") or "market_id"]
+                mkts_by_did[did][mid] = m.get(find_key(m, "market", "name") or "market_name")
+    top_dids = sorted(mkts_by_did, key=lambda d: len(mkts_by_did[d]),
+                      reverse=True)[:QUAL_TOP_DISTRICTS]
+
+    # 2+3. For each top district: pick top-K mandis by cross-GROUP presence,
+    #      then price them (one year) and tally records per (mandi, group).
+    dense_mandis = {}                        # mid -> mname  (>=150 recs for >=1 group)
+    groups_hit = set()
+    probed_mandis = set()
+    for did in top_dids:
+        present = defaultdict(int)           # mid -> # groups listing it
+        grp_mkts = defaultdict(dict)         # group -> {mid: mname} in this district
+        for gname, ids in groups.items():
+            gmids = {}
+            for cid in ids:
+                crop = {"id": cid, "name": f"c{cid}"}
+                for m in markets_in(client, crop, state, did, budget):
+                    mid = m[find_key(m, "market", "id") or "market_id"]
+                    gmids[mid] = m.get(find_key(m, "market", "name") or "market_name")
+            for mid, nm in gmids.items():
+                grp_mkts[gname][mid] = nm
+                present[mid] += 1            # +1 per GROUP (not per member id)
+        top_mids = sorted(present, key=present.get, reverse=True)[:QUAL_TOP_MANDIS]
+        if not top_mids:
+            continue
+        probed_mandis.update(top_mids)
+        for gname, ids in groups.items():
+            got = defaultdict(int)           # mid -> records for this group
+            for cid in ids:
+                counts = _qual_prices(client, cid, sid, did, top_mids, year, budget)
+                for mid, n in counts.items():
+                    if mid in top_mids:
+                        got[mid] += n
+            for mid, n in got.items():
+                if n >= QUAL_DENSE_RECORDS:
+                    dense_mandis[mid] = grp_mkts[gname].get(mid) or mkts_by_did[did].get(mid)
+                    groups_hit.add(gname)
+
+    qualified = (len(dense_mandis) >= QUAL_MIN_DENSE_MANDIS
+                 and len(groups_hit) >= QUAL_MIN_GROUPS_COVERED)
+    print(f"  {sname}: {len(probed_mandis)} mandis probed, "
+          f"{len(dense_mandis)} dense, {len(groups_hit)}/8 groups "
+          f"-> {'QUALIFIED' if qualified else 'NOT qualified'}")
+    return {
+        "state_id": sid, "state_name": sname, "poverty": st["poverty"],
+        "role": st.get("role", "candidate"),
+        "districts_probed": len(top_dids), "mandis_probed": len(probed_mandis),
+        "dense_mandis": len(dense_mandis),
+        "groups_covered": sorted(groups_hit), "qualified": qualified,
+    }
+
+
+def run_qualification(client, budget, groups, year, out_md,
+                      candidates=None, fallbacks=None):
+    """Probe primary candidates; probe a fallback only when a primary fails, in
+    order, until the primary shortfall is covered or fallbacks run out. Writes
+    reports/state_qualification.md. Resumable: budget-pause writes a partial
+    report and asks for a re-run.
+
+    candidates/fallbacks default to the module lists. Pass a filtered candidate
+    list (and fallbacks=[]) to warm ONE state's cache in a parallel process on a
+    separate key; the orchestrating full run then sails through that state on
+    cache hits and writes the real combined report with fallback logic intact."""
+    candidates = QUALIFY_CANDIDATES if candidates is None else candidates
+    fallbacks = QUALIFY_FALLBACKS if fallbacks is None else fallbacks
+    results, complete = [], True
+    try:
+        for st in candidates:
+            print(f"\n[qualify] {st['name']} (s{st['id']}) ...")
+            results.append(qualify_one_state(client, st, groups, year, budget))
+        shortfall = sum(1 for r in results if not r["qualified"])
+        fbs = iter(fallbacks)
+        while shortfall > 0:
+            st = next(fbs, None)
+            if st is None:
+                break
+            print(f"\n[qualify] primary shortfall -> fallback {st['name']} ...")
+            r = qualify_one_state(client, dict(st, role="fallback"), groups, year, budget)
+            results.append(r)
+            if r["qualified"]:
+                shortfall -= 1
+    except StopIteration as e:
+        complete = False
+        print(f"\n!! QUALIFY PAUSED: {e}. Re-run the same command to continue "
+              f"(cached calls are free).")
+    _write_qualification_report(results, year, out_md, complete)
+    return results, complete
+
+
+def _write_qualification_report(results, year, out_md, complete):
+    n_groups = 8
+    lines = [
+        "# State Qualification Probe — Food Access Watch (Scope-Correction Task 3)",
+        "",
+        f"Probe year **{year}**. Status: "
+        f"**{'COMPLETE' if complete else 'INCOMPLETE (budget-paused; re-run)'}**.",
+        "",
+        "**Pre-registered rule (fixed before probing):** a state QUALIFIES for "
+        f"phase A if **>= {QUAL_MIN_DENSE_MANDIS} mandis** show dense reporting "
+        f"(**>= {QUAL_DENSE_RECORDS} price records** in the probe year) together "
+        f"covering **>= {QUAL_MIN_GROUPS_COVERED} of {n_groups} crop groups**.",
+        "",
+        f"**Hard caps:** top {QUAL_TOP_DISTRICTS} districts by cereal market "
+        f"count, top {QUAL_TOP_MANDIS} mandis per district, one year, PRICES "
+        "only, every /markets response cached.",
+        "",
+        "## Dropped from phase A (structural, not appetite)",
+        "",
+    ]
+    for sid, reason in PHASE_A_EXCLUDE.items():
+        lines.append(f"- **{reason.split(' — ')[0]} (state {sid})** — "
+                     f"{reason.split(' — ', 1)[1]}")
+    lines += [
+        "",
+        "## Candidates probed (poverty-relevant replacements)",
+        "",
+        "| State | Role | Poverty relevance | Districts | Mandis probed | "
+        "Dense mandis | Groups covered | QUALIFIED |",
+        "|---|---|---|---:|---:|---:|---:|:---:|",
+    ]
+    for r in results:
+        lines.append(
+            f"| {r['state_name']} ({r['state_id']}) | {r['role']} | {r['poverty']} "
+            f"| {r['districts_probed']} | {r['mandis_probed']} | {r['dense_mandis']} "
+            f"| {len(r['groups_covered'])} ({', '.join(r['groups_covered']) or '—'}) "
+            f"| {'✅ YES' if r['qualified'] else '❌ no'} |")
+    qualified = [r["state_name"] for r in results if r["qualified"]]
+    lines += [
+        "",
+        f"**Phase-A geography decision:** kept states = the 4 dense originals "
+        f"(Maharashtra, Uttar Pradesh, Madhya Pradesh, West Bengal) + qualified "
+        f"candidates = **{', '.join(qualified) if qualified else '(none yet)'}**.",
+        "",
+        "_Scope is evidence, not opinion: this table — not a hand-picked list — "
+        "decides phase-A geography._",
+    ]
+    Path(out_md).write_text("\n".join(lines) + "\n")
+    print(f"\nWrote {out_md}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--probe-year", type=int, default=2024)
@@ -292,6 +543,11 @@ def main():
                     help="only warm the cache for the selected shard; do NOT write "
                          "market_selection.json. Run one final unfiltered command to "
                          "aggregate once all shards finish.")
+    ap.add_argument("--qualify-states", action="store_true",
+                    help="Run the pre-registered state-qualification probe (Task 3) "
+                         "over the poverty-relevant candidate states instead of the "
+                         "density probe; write reports/state_qualification.md.")
+    ap.add_argument("--qual-out", default="reports/state_qualification.md")
     args = ap.parse_args()
 
     PROBE.mkdir(parents=True, exist_ok=True)
@@ -299,13 +555,38 @@ def main():
     client = CedaClient()
     budget = Budget(args.budget)
 
+    if args.qualify_states:
+        groups = load_crop_groups(args.config)
+        candidates, fallbacks = QUALIFY_CANDIDATES, QUALIFY_FALLBACKS
+        if args.only_states:
+            want = {int(x) for x in args.only_states.split(",")}
+            pool = QUALIFY_CANDIDATES + QUALIFY_FALLBACKS
+            candidates = [s for s in pool if s["id"] in want]
+            fallbacks = []   # cache-warm mode: no fallback orchestration here —
+                             # the full run owns that and the combined report.
+            print(f"[qualify] cache-warm mode: states {sorted(want)} only, "
+                  f"fallbacks suppressed (a full run writes the real report).")
+        print(f"State-qualification probe (Task 3): candidates "
+              f"{[s['name'] for s in candidates]}, fallbacks "
+              f"{[s['name'] for s in fallbacks]}, probe year "
+              f"{args.probe_year}, budget {args.budget} new calls.\n"
+              f"Rule: >={QUAL_MIN_DENSE_MANDIS} dense mandis "
+              f"(>={QUAL_DENSE_RECORDS} recs) over >={QUAL_MIN_GROUPS_COVERED}/8 groups.")
+        run_qualification(client, budget, groups, args.probe_year, args.qual_out,
+                          candidates=candidates, fallbacks=fallbacks)
+        return
+
     crops, states = CROPS, STATES
     if args.only_crops:
         want = {int(x) for x in args.only_crops.split(",")}
         crops = [c for c in CROPS if c["id"] in want]
     if args.only_states:
         want = {int(x) for x in args.only_states.split(",")}
-        states = [s for s in STATES if s["id"] in want]
+        # Resolve from the full pool so qualified phase-A candidates (Chhattisgarh,
+        # Rajasthan) — which live in the QUALIFY_* lists, not STATES — are probeable
+        # by id. STATES stays the master list the qualification report is built on.
+        pool = STATES + QUALIFY_CANDIDATES + QUALIFY_FALLBACKS
+        states = [s for s in pool if s["id"] in want]
 
     print(f"Market-selection probe: {len(crops)} crop-candidates x {len(states)} "
           f"states, probe year {args.probe_year}, top-{args.top_k} per cell, "

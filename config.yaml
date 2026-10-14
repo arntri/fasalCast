@@ -1,82 +1,2086 @@
 scope:
   state: Maharashtra
-  crops: [Onion, Tomato, Potato]
-  markets: [Lasalgaon, Pimpalgaon Baswant, Pune, Nashik]
-
+  crops:
+  - Onion
+  - Tomato
+  - Potato
+  markets:
+  - Lasalgaon
+  - Pimpalgaon Baswant
+  - Pune
+  - Nashik
 validation:
-  min_coverage: 0.60
+  min_coverage: 0.6
   min_rows: 500
   max_daily_price_jump: 1.0
   unit_shift_factor: 8.0
   price_bounds:
-    Onion:  [50, 20000]
-    Tomato: [50, 20000]
-    Potato: [50, 15000]
-
+    Onion:
+    - 50
+    - 20000
+    Tomato:
+    - 50
+    - 20000
+    Potato:
+    - 50
+    - 15000
 labels:
   trailing_window_days: 365
   min_obs: 90
-  hi_quantile: 0.90
-  lo_quantile: 0.10
-
-commodity_names: {23: Onion, 78: Tomato, 24: Potato}
-
-# --- Crop groups: the basket unit (Scope-Correction Task 1) --------------------
-# A "group" is one physical commodity that may appear under several catalogue
-# ids. Each STATE contributes whichever group MEMBER it actually reports (e.g.
-# MP files paddy id 2, Maharashtra files rice id 3 — see select_markets.py
-# resolve_groups, which keeps the denser member per state). The 8 groups below
-# are the basket; all but rice/redgram map 1:1 for now.
-#
-# MILLING-MARGIN CAVEAT (binding): paddy (unmilled) and rice (milled) sit at
-# DIFFERENT price LEVELS (rice ≈ paddy × milling yield + margin). NEVER average
-# raw paddy and rice prices together. Group aggregation happens ONLY at the
-# already unit-free stress/z-score level — each SERIES (market, commodity) is
-# z-scored against its OWN trailing history first, so mixed members are safe by
-# construction. (TODO: move this caveat into basket.py's docstring when the
-# basket layer is built at T3 — deferred per Scope-Correction scope decision.)
+  hi_quantile: 0.9
+  lo_quantile: 0.1
+commodity_names:
+  23: Onion
+  78: Tomato
+  24: Potato
 crop_groups:
-  rice:       [3, 2]     # Rice(3) + Paddy(Dhan)(Common)(2)   -- milling caveat above
-  wheat:      [1]
-  onion:      [23]
-  potato:     [24]
-  tomato:     [78]
-  bengalgram: [6]        # Bengal Gram(Gram)(Whole) — chana
-  mustard:    [12]
-  redgram:    [7, 49]    # Red Gram(7) + Arhar(Tur/Red Gram)(Whole)(49)
-
-# ids (verified via /agmarknet discovery): Onion=23 Tomato=78 Potato=24
-#   Maharashtra state=27 | Nashik district=516 | Pune district=521
-#   Pune markets: Pune(main yard)=172, Pune(Moshi)=4752
+  rice:
+  - 3
+  - 2
+  wheat:
+  - 1
+  onion:
+  - 23
+  potato:
+  - 24
+  tomato:
+  - 78
+  bengalgram:
+  - 6
+  mustard:
+  - 12
+  redgram:
+  - 7
+  - 49
 backfill_targets:
-  # --- Milestone 1: Onion @ Nashik (already backfilled/cached) ---
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 516, market_id: 2484, market_name: "Lasalgaon(Niphad)"}
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 516, market_id: 2488, market_name: "Pimpalgaon Baswant(Saykheda)"}
-  # --- Task 3 widening: Tomato + Potato @ the two OK Nashik markets ---
-  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
-     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
-  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
-     district_id: 516, market_id: 169, market_name: "Lasalgaon"}
-  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
-     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
-  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
-     district_id: 516, market_id: 4750, market_name: "Lasalgaon(Vinchur)"}
-  # --- Task 3 widening: Onion + Tomato + Potato @ two major Pune markets ---
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 521, market_id: 172, market_name: "Pune"}
-  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
-     district_id: 521, market_id: 172, market_name: "Pune"}
-  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
-     district_id: 521, market_id: 172, market_name: "Pune"}
-  - {commodity_id: 23, commodity_name: Onion, state_id: 27,
-     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
-  - {commodity_id: 78, commodity_name: Tomato, state_id: 27,
-     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
-  - {commodity_id: 24, commodity_name: Potato, state_id: 27,
-     district_id: 521, market_id: 4752, market_name: "Pune(Moshi)"}
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 516
+  market_id: 169
+  market_name: Lasalgaon
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 516
+  market_id: 2484
+  market_name: Lasalgaon(Niphad)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 516
+  market_id: 4750
+  market_name: Lasalgaon(Vinchur)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 516
+  market_id: 2488
+  market_name: Pimpalgaon Baswant(Saykheda)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  district_id: 516
+  market_id: 169
+  market_name: Lasalgaon
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  district_id: 516
+  market_id: 169
+  market_name: Lasalgaon
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  district_id: 516
+  market_id: 4750
+  market_name: Lasalgaon(Vinchur)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  district_id: 516
+  market_id: 4750
+  market_name: Lasalgaon(Vinchur)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  district_id: 521
+  market_id: 4752
+  market_name: Pune(Moshi)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  district_id: 521
+  market_id: 4752
+  market_name: Pune(Moshi)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  district_id: 521
+  market_id: 4752
+  market_name: Pune(Moshi)
+backfill_targets_auto:
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 505
+  market_id: 163
+  market_name: Nagpur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 501
+  market_id: 154
+  market_name: Akola
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 515
+  market_id: 582
+  market_name: Sillod
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 522
+  market_id: 2382
+  market_name: Rahata
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 503
+  market_id: 155
+  market_name: Amarawati
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 526
+  market_id: 176
+  market_name: Solapur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 156
+  market_id: 1196
+  market_name: Unnao
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 158
+  market_id: 683
+  market_name: Raibareilly
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 158
+  market_id: 2585
+  market_name: Lalganj
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 157
+  market_id: 2584
+  market_name: Banthara
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 173
+  market_id: 686
+  market_name: Pratapgarh
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 179
+  market_id: 1936
+  market_name: Jafarganj
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 445
+  market_id: 550
+  market_name: Sehore
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 444
+  market_id: 1130
+  market_name: Berasia
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 443
+  market_id: 198
+  market_name: Ganjbasoda
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 438
+  market_id: 542
+  market_name: Dhar
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 433
+  market_id: 546
+  market_name: Mandsaur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 431
+  market_id: 1394
+  market_name: Umariya
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3630
+  market_name: Durgapur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 835
+  market_name: Bishnupur(Bankura)
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3947
+  market_name: Asansol
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 333
+  market_id: 2637
+  market_name: Kandi
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 3629
+  market_name: Khatra
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 19
+  state_name: West Bengal
+  district_id: 334
+  market_id: 350
+  market_name: Bolpur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 410
+  market_id: 426
+  market_name: Bhatapara
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 433
+  market_name: Munguli
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 407
+  market_id: 431
+  market_name: Kawardha
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 432
+  market_name: Bilaspur
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 409
+  market_id: 4043
+  market_name: Saja
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 130
+  market_id: 669
+  market_name: Udaipur (Grain)
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 120
+  market_id: 8330
+  market_name: Dooni
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 109
+  market_id: 3140
+  market_name: Mandawari
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 120
+  market_id: 1524
+  market_name: Deoli
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 121
+  market_id: 262
+  market_name: Bundi
+- commodity_id: 1
+  commodity_name: Wheat
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 129
+  market_id: 1557
+  market_name: Khanpur
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 520
+  market_id: 1424
+  market_name: Alibagh
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 520
+  market_id: 2065
+  market_name: Murud
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 517
+  market_id: 2068
+  market_name: Palghar
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 526
+  market_id: 176
+  market_name: Solapur
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 520
+  market_id: 2064
+  market_name: Mangaon
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 517
+  market_id: 1429
+  market_name: Ulhasnagar
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 195
+  market_id: 692
+  market_name: Gazipur
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 172
+  market_id: 1923
+  market_name: Bindki
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 158
+  market_id: 683
+  market_name: Raibareilly
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 158
+  market_id: 2585
+  market_name: Lalganj
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 156
+  market_id: 1196
+  market_name: Unnao
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 173
+  market_id: 686
+  market_name: Pratapgarh
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 336
+  market_id: 2638
+  market_name: Kalyani
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 338
+  market_id: 4341
+  market_name: Kalipur
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 835
+  market_name: Bishnupur(Bankura)
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3630
+  market_name: Durgapur
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 351
+  market_name: Kalna
+- commodity_id: 3
+  commodity_name: Rice
+  state_id: 19
+  state_name: West Bengal
+  district_id: 341
+  market_id: 833
+  market_name: Ramkrishanpur(Howrah)
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 446
+  market_id: 1835
+  market_name: Obedullaganj
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 446
+  market_id: 2436
+  market_name: Bareli
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 449
+  market_id: 553
+  market_name: Pipariya
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 446
+  market_id: 558
+  market_name: Raisen
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 443
+  market_id: 199
+  market_name: Vidisha
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 452
+  market_id: 2433
+  market_name: Gadarwada
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 412
+  market_id: 184
+  market_name: Kurud
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 412
+  market_id: 183
+  market_name: Dhamtari
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 433
+  market_name: Munguli
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 409
+  market_id: 429
+  market_name: Balod
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 2755
+  market_name: Pendraroad
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 121
+  market_id: 262
+  market_name: Bundi
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 128
+  market_id: 258
+  market_name: Baran
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 127
+  market_id: 281
+  market_name: Kota
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 272
+  market_name: Pilibanga
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 2859
+  market_name: Hanumangarh Town
+- commodity_id: 2
+  commodity_name: Paddy(Dhan)(Common)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 270
+  market_name: Hanumangarh
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 505
+  market_id: 163
+  market_name: Nagpur
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 522
+  market_id: 1433
+  market_name: Shevgaon
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 4751
+  market_name: Pune(Manjri)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 516
+  market_id: 169
+  market_name: Lasalgaon
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 516
+  market_id: 4750
+  market_name: Lasalgaon(Vinchur)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 516
+  market_id: 168
+  market_name: Nasik
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 175
+  market_id: 1898
+  market_name: Ajuha
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 142
+  market_id: 1958
+  market_name: Gulavati
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 151
+  market_id: 339
+  market_name: Pilibhit
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 135
+  market_id: 1963
+  market_name: Sambhal
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 152
+  market_id: 342
+  market_name: Puwaha
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 183
+  market_id: 2605
+  market_name: Nawabganj
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 439
+  market_id: 3873
+  market_name: Indore
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 432
+  market_id: 190
+  market_name: Neemuch
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 434
+  market_id: 2431
+  market_name: Sailana
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 434
+  market_id: 551
+  market_name: Ratlam
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 433
+  market_id: 546
+  market_name: Mandsaur
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 438
+  market_id: 2419
+  market_name: Badnawar
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 351
+  market_name: Kalna
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 332
+  market_id: 358
+  market_name: English Bazar
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 338
+  market_id: 4341
+  market_name: Kalipur
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 835
+  market_name: Bishnupur(Bankura)
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 338
+  market_id: 856
+  market_name: Champadanga
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3947
+  market_name: Asansol
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 409
+  market_id: 428
+  market_name: Durg
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 403
+  market_id: 436
+  market_name: Raigarh
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 4055
+  market_name: Tiphra
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 432
+  market_name: Bilaspur
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 415
+  market_id: 2415
+  market_name: Narayanpur
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1538
+  market_name: Goluwala
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1540
+  market_name: Rawatsar
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 111
+  market_id: 664
+  market_name: Sikar
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1537
+  market_name: Bhadara
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 271
+  market_name: Sangriya
+- commodity_id: 23
+  commodity_name: Onion
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 110
+  market_id: 3146
+  market_name: Chomu (F&V)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 4751
+  market_name: Pune(Manjri)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 4752
+  market_name: Pune(Moshi)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 522
+  market_id: 2382
+  market_name: Rahata
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 2495
+  market_name: Pune(Khadiki)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 503
+  market_id: 3111
+  market_name: Amrawati(Frui & Veg. Market)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 175
+  market_id: 1898
+  market_name: Ajuha
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 142
+  market_id: 1958
+  market_name: Gulavati
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 151
+  market_id: 339
+  market_name: Pilibhit
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 135
+  market_id: 1963
+  market_name: Sambhal
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 152
+  market_id: 342
+  market_name: Puwaha
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 183
+  market_id: 2605
+  market_name: Nawabganj
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 435
+  market_id: 197
+  market_name: Ujjain
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 439
+  market_id: 3873
+  market_name: Indore
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 419
+  market_id: 554
+  market_name: Morena
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 419
+  market_id: 2743
+  market_name: Porsa
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 436
+  market_id: 193
+  market_name: Sajapur
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 464
+  market_id: 10614
+  market_name: Petlawad(F&V)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3630
+  market_name: Durgapur
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 328
+  market_id: 703
+  market_name: Alipurduar
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 328
+  market_id: 4333
+  market_name: Falakata
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 327
+  market_id: 4335
+  market_name: Karsiyang(Matigara)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 351
+  market_name: Kalna
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 327
+  market_id: 704
+  market_name: Kalimpong
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 403
+  market_id: 436
+  market_name: Raigarh
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 409
+  market_id: 428
+  market_name: Durg
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 4055
+  market_name: Tiphra
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 432
+  market_name: Bilaspur
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 2749
+  market_name: Gandai
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1538
+  market_name: Goluwala
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1540
+  market_name: Rawatsar
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1537
+  market_name: Bhadara
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 111
+  market_id: 664
+  market_name: Sikar
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 2858
+  market_name: Alwar (F&V)
+- commodity_id: 24
+  commodity_name: Potato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 271
+  market_name: Sangriya
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 505
+  market_id: 163
+  market_name: Nagpur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 2494
+  market_name: Pune(Pimpri)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 4751
+  market_name: Pune(Manjri)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 505
+  market_id: 3972
+  market_name: Kamthi
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 4752
+  market_name: Pune(Moshi)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 132
+  market_id: 340
+  market_name: Saharanpur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 175
+  market_id: 1898
+  market_name: Ajuha
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 151
+  market_id: 339
+  market_name: Pilibhit
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 152
+  market_id: 342
+  market_name: Puwaha
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 183
+  market_id: 2605
+  market_name: Nawabganj
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 151
+  market_id: 1906
+  market_name: Puranpur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 464
+  market_id: 10614
+  market_name: Petlawad(F&V)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 419
+  market_id: 554
+  market_name: Morena
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 419
+  market_id: 2743
+  market_name: Porsa
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 466
+  market_id: 10625
+  market_name: Sanawad(F&V)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 442
+  market_id: 10627
+  market_name: Sarangpur(F&V)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 448
+  market_id: 10648
+  market_name: Timarni(F&V)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 338
+  market_id: 4341
+  market_name: Kalipur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 3629
+  market_name: Khatra
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 338
+  market_id: 856
+  market_name: Champadanga
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3947
+  market_name: Asansol
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3630
+  market_name: Durgapur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 19
+  state_name: West Bengal
+  district_id: 337
+  market_id: 348
+  market_name: Barasat
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 403
+  market_id: 436
+  market_name: Raigarh
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 409
+  market_id: 428
+  market_name: Durg
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 4055
+  market_name: Tiphra
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 432
+  market_name: Bilaspur
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 2749
+  market_name: Gandai
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1538
+  market_name: Goluwala
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1540
+  market_name: Rawatsar
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 111
+  market_id: 664
+  market_name: Sikar
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 100
+  market_id: 1537
+  market_name: Bhadara
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 2858
+  market_name: Alwar (F&V)
+- commodity_id: 78
+  commodity_name: Tomato
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 123
+  market_id: 1570
+  market_name: Rajsamand
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 501
+  market_id: 154
+  market_name: Akola
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 514
+  market_id: 158
+  market_name: Jalana
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 521
+  market_id: 172
+  market_name: Pune
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 503
+  market_id: 155
+  market_name: Amarawati
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 504
+  market_id: 178
+  market_name: Hinganghat
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 516
+  market_id: 169
+  market_name: Lasalgaon
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 196
+  market_id: 1897
+  market_name: Chandoli
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 156
+  market_id: 1196
+  market_name: Unnao
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 183
+  market_id: 684
+  market_name: Gonda
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 194
+  market_id: 1955
+  market_name: Mugrabaadshahpur
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 162
+  market_id: 2583
+  market_name: Achalda
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 159
+  market_id: 1911
+  market_name: Kayamganj
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 448
+  market_id: 1126
+  market_name: Harda
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 445
+  market_id: 550
+  market_name: Sehore
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 450
+  market_id: 188
+  market_name: Katni
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 428
+  market_id: 565
+  market_name: Damoh
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 452
+  market_id: 2433
+  market_name: Gadarwada
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 447
+  market_id: 555
+  market_name: Betul
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 19
+  state_name: West Bengal
+  district_id: 344
+  market_id: 698
+  market_name: Medinipur(West)
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 433
+  market_name: Munguli
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 410
+  market_id: 426
+  market_name: Bhatapara
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 407
+  market_id: 431
+  market_name: Kawardha
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 413
+  market_id: 2770
+  market_name: Sambalpur
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 410
+  market_id: 2398
+  market_name: Abhanpur
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 128
+  market_id: 258
+  market_name: Baran
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 127
+  market_id: 281
+  market_name: Kota
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 119
+  market_id: 1185
+  market_name: Madanganj Kishangarh
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 120
+  market_id: 1526
+  market_name: Malpura
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 129
+  market_id: 1553
+  market_name: Bhawani Mandi
+- commodity_id: 6
+  commodity_name: Bengal Gram(Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 129
+  market_id: 1557
+  market_name: Khanpur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 519
+  market_id: 162
+  market_name: Mumbai
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 514
+  market_id: 158
+  market_name: Jalana
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 501
+  market_id: 154
+  market_name: Akola
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 506
+  market_id: 1351
+  market_name: Bhandara
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 500
+  market_id: 156
+  market_name: Khamgaon
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 524
+  market_id: 1825
+  market_name: Ahmedpur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 168
+  market_id: 1970
+  market_name: Bharuasumerpur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 196
+  market_id: 1897
+  market_name: Chandoli
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 162
+  market_id: 826
+  market_name: Auraiya
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 163
+  market_id: 1194
+  market_name: Pukharayan
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 157
+  market_id: 334
+  market_name: Lucknow
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 155
+  market_id: 1952
+  market_name: Madhoganj
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 450
+  market_id: 188
+  market_name: Katni
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 420
+  market_id: 1383
+  market_name: Gohad
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 459
+  market_id: 185
+  market_name: Ashoknagar
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 421
+  market_id: 545
+  market_name: Lashkar
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 429
+  market_id: 194
+  market_name: Satna
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 419
+  market_id: 2743
+  market_name: Porsa
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 835
+  market_name: Bishnupur(Bankura)
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3630
+  market_name: Durgapur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3947
+  market_name: Asansol
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 339
+  market_id: 3629
+  market_name: Khatra
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 336
+  market_id: 362
+  market_name: Karimpur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 19
+  state_name: West Bengal
+  district_id: 344
+  market_id: 855
+  market_name: Ghatal
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 410
+  market_id: 426
+  market_name: Bhatapara
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 401
+  market_id: 2763
+  market_name: Ramanujganj
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 401
+  market_id: 2767
+  market_name: Kusmee
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 402
+  market_id: 444
+  market_name: Jaspur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 401
+  market_id: 438
+  market_name: Ambikapur
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 109
+  market_id: 3140
+  market_name: Mandawari
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 3149
+  market_name: Barodamev
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 99
+  market_id: 269
+  market_name: Sriganganagar (Grain)
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 120
+  market_id: 1524
+  market_name: Deoli
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 3161
+  market_name: Laxmangarh (Barodamev)
+- commodity_id: 12
+  commodity_name: Mustard
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 120
+  market_id: 8330
+  market_name: Dooni
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 501
+  market_id: 154
+  market_name: Akola
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 503
+  market_id: 155
+  market_name: Amarawati
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 504
+  market_id: 178
+  market_name: Hinganghat
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 502
+  market_id: 593
+  market_name: Karanja
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 500
+  market_id: 599
+  market_name: Malkapur
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 27
+  state_name: Maharashtra
+  district_id: 505
+  market_id: 607
+  market_name: Savner
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 163
+  market_id: 1194
+  market_name: Pukharayan
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 140
+  market_id: 324
+  market_name: Ghaziabad
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 199
+  market_id: 691
+  market_name: Mirzapur
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 143
+  market_id: 1894
+  market_name: Aligarh
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 164
+  market_id: 330
+  market_name: Kanpur(Grain)
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 9
+  state_name: Uttar Pradesh
+  district_id: 138
+  market_id: 336
+  market_name: Meerut
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 450
+  market_id: 188
+  market_name: Katni
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 449
+  market_id: 553
+  market_name: Pipariya
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 429
+  market_id: 194
+  market_name: Satna
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 451
+  market_id: 559
+  market_name: Jabalpur
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 428
+  market_id: 565
+  market_name: Damoh
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 23
+  state_name: Madhya Pradesh
+  district_id: 439
+  market_id: 3873
+  market_name: Indore
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 19
+  state_name: West Bengal
+  district_id: 335
+  market_id: 3947
+  market_name: Asansol
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 410
+  market_id: 426
+  market_name: Bhatapara
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 408
+  market_id: 192
+  market_name: Rajnandgaon
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 407
+  market_id: 431
+  market_name: Kawardha
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 406
+  market_id: 433
+  market_name: Munguli
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 402
+  market_id: 444
+  market_name: Jaspur
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 22
+  state_name: Chhattisgarh
+  district_id: 401
+  market_id: 2763
+  market_name: Ramanujganj
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 110
+  market_id: 1780
+  market_name: Chaksu
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 131
+  market_id: 264
+  market_name: Pratapgarh
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 256
+  market_name: Khairthal
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 121
+  market_id: 2852
+  market_name: Sumerganj
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 109
+  market_id: 654
+  market_name: Lalsot
+- commodity_id: 49
+  commodity_name: Arhar (Tur/Red Gram)(Whole)
+  state_id: 8
+  state_name: Rajasthan
+  district_id: 104
+  market_id: 255
+  market_name: Alwar

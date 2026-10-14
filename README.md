@@ -34,6 +34,12 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
 | `seasonal_naive` (baseline) | 935 | 57.1% | 38,670 | 65.8% | 0.00/0.00/— | 0.05/0.03/0.04 |
 | `lgbm` | **250** | **14.5%** | **20,067** | **44.9%** | —/0.00/— | **0.63/0.49/0.55** |
 | `lgbm_weather` | 254 | 14.8% | 20,003 | 44.6% | —/0.00/— | 0.58/0.43/0.49 |
+| `lgbm_quantile_flags` | — | — | — | — | 0.00/0.00/— | n/a |
+
+(`lgbm_quantile_flags` is a spoilage-only operating point — two LightGBM
+**quantile** regressors, not mean regressors — so its regression MAE/sMAPE are
+deliberately biased and shown `—`, and it does not target shortage (`n/a`). See
+the spoilage bullet below and `reports/model_comparison.md`.)
 
 - **LightGBM beats the baseline decisively** on both regression targets
   (price MAE −73%, arrivals MAE −48%) and lifts shortage-flag F1 from 0.04 to
@@ -43,18 +49,24 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
   vs plain `lgbm`). For onion at a weekly horizon the price/arrival
   autoregressive features already carry the seasonal signal. Reported as found.
 - **Spoilage flags are not learnable here — and we know exactly why.** Only 6
-  spoilage events occur in 750 folds; neither model predicts a true positive.
+  spoilage events occur in 750 folds. The two mean regressors (`lgbm`,
+  `lgbm_weather`) predict no spoilage flag at all; the tail-aware
+  `lgbm_quantile_flags` head *does* fire spoilage flags but catches **0 of 6**
+  real events (precision/recall 0.00/0.00) — reported honestly as a
+  panel-scored model, not a discarded prototype.
   `src/diagnostics.py` (→ `reports/spoilage_diagnostics.md`) traces the cause:
   spoilage is a compound tail (arrivals in the top decile AND price in the
   bottom decile), and a mean regressor predicts near the centre (median
   arrivals-percentile 0.33, price 0.49), so it never satisfies the double-AND.
-  A principled tail-aware fix — a LightGBM **quantile head** (arrivals α=0.90,
-  price α=0.10, α set to the flag's own deciles, not tuned) — gets the **price
-  crash right on 5/6 events but the arrivals spike on 0/6**: the arrivals spike
-  is close to unpredictable a week ahead from price/arrival history. So the
-  binding constraints are (1) event scarcity (~6 positives) and (2) an
-  unpredictable arrivals spike — the durable fix is **more markets** (Pune
-  widening), not more model. Reported as found.
+  The tail-aware fix — a LightGBM **quantile head** (arrivals α=0.90,
+  price α=0.10, α set to the flag's own deciles, not tuned) — fixes the **price
+  half of the flag (crash right on 5/6 events) but not the arrivals half (spike
+  on 0/6)**, so the compound AND still never lands on a true event and every
+  flag it does fire is a false positive. The arrivals spike is close to
+  unpredictable a week ahead from price/arrival history. So the binding
+  constraints are (1) event scarcity (~6 positives) and (2) an unpredictable
+  arrivals spike — the durable fix is **more markets** (Pune widening), not more
+  model. Reported as found.
 
 Historical label base rates (`python src/labels.py`, trailing-quantile labels):
 Onion@169 spoilage 2.28% / shortage 2.24%; Onion@4750 spoilage 1.13% /

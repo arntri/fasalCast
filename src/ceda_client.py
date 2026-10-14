@@ -26,8 +26,11 @@ class CedaError(RuntimeError):
 
 
 class CedaClient:
-    def __init__(self, base_url=BASE_URL, min_interval=1.0, max_retries=5, timeout=120):
-        key = os.environ.get("CEDA_API_KEY")
+    def __init__(self, base_url=BASE_URL, min_interval=1.0, max_retries=5, timeout=120,
+                 api_key=None):
+        # Explicit api_key lets a multi-key fleet run one client per key in its
+        # own thread; env stays the default for single-key CLI use.
+        key = api_key or os.environ.get("CEDA_API_KEY")
         if not key:
             raise CedaError(
                 "CEDA_API_KEY not set. Run: export CEDA_API_KEY='your-key' "
@@ -35,8 +38,11 @@ class CedaClient:
             )
         self.base_url = base_url.rstrip("/")
         self.min_interval = min_interval
-        self.max_retries = max_retries
-        self.timeout = timeout
+        # Env overrides so a flaky-gateway backfill can fail fast (fewer retries,
+        # shorter per-request timeout) and mop up 504'd chunks on a later pass,
+        # instead of burning ~31s of backoff / up to `timeout`s hanging per call.
+        self.max_retries = int(os.environ.get("CEDA_MAX_RETRIES", max_retries))
+        self.timeout = int(os.environ.get("CEDA_TIMEOUT", timeout))
         self._last_call = 0.0
         self.session = requests.Session()
         self.session.headers.update(
@@ -126,7 +132,13 @@ class CedaClient:
             return self._unwrap(self._request("POST", "/agmarknet/markets",
                                               json=body))
         except CedaError as e:
-            print(f"    (scalar district_id failed: {str(e)[:120]} — "
+            # Only a 400 means "wrong request shape" — the one case the array
+            # variant might fix. On 504/5xx/429 the scalar body was fine and the
+            # server just glitched; retrying the (malformed) array form only 500s
+            # and burns another retry-backoff cycle, so propagate instead.
+            if "400" not in str(e):
+                raise
+            print(f"    (scalar district_id 400'd: {str(e)[:100]} — "
                   f"trying array variant...)")
             body = dict(base, district_id=[district_id])
             return self._unwrap(self._request("POST", "/agmarknet/markets",
