@@ -1,0 +1,2793 @@
+{
+  "probe_year": 2024,
+  "top_k": 6,
+  "from_year": 2008,
+  "to_year": 2026,
+  "probe_calls_spent": 0,
+  "probe_complete": true,
+  "n_target_pairs": 278,
+  "n_years": 19,
+  "backfill_chunk_budget": 10564,
+  "targets": [
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 505,
+      "market_id": 163,
+      "market_name": "Nagpur",
+      "probe_recs": 416
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 501,
+      "market_id": 154,
+      "market_name": "Akola",
+      "probe_recs": 354
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 515,
+      "market_id": 582,
+      "market_name": "Sillod",
+      "probe_recs": 269
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 522,
+      "market_id": 2382,
+      "market_name": "Rahata",
+      "probe_recs": 265
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 503,
+      "market_id": 155,
+      "market_name": "Amarawati",
+      "probe_recs": 259
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 526,
+      "market_id": 176,
+      "market_name": "Solapur",
+      "probe_recs": 258
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 156,
+      "market_id": 1196,
+      "market_name": "Unnao",
+      "probe_recs": 338
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 158,
+      "market_id": 683,
+      "market_name": "Raibareilly",
+      "probe_recs": 336
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 158,
+      "market_id": 2585,
+      "market_name": "Lalganj",
+      "probe_recs": 336
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 157,
+      "market_id": 2584,
+      "market_name": "Banthara",
+      "probe_recs": 326
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 173,
+      "market_id": 686,
+      "market_name": "Pratapgarh",
+      "probe_recs": 326
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 179,
+      "market_id": 1936,
+      "market_name": "Jafarganj",
+      "probe_recs": 325
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 445,
+      "market_id": 550,
+      "market_name": "Sehore",
+      "probe_recs": 1020
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 444,
+      "market_id": 1130,
+      "market_name": "Berasia",
+      "probe_recs": 944
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 443,
+      "market_id": 198,
+      "market_name": "Ganjbasoda",
+      "probe_recs": 940
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 438,
+      "market_id": 542,
+      "market_name": "Dhar",
+      "probe_recs": 843
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 433,
+      "market_id": 546,
+      "market_name": "Mandsaur",
+      "probe_recs": 704
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 431,
+      "market_id": 1394,
+      "market_name": "Umariya",
+      "probe_recs": 654
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3630,
+      "market_name": "Durgapur",
+      "probe_recs": 686
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 835,
+      "market_name": "Bishnupur(Bankura)",
+      "probe_recs": 351
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3947,
+      "market_name": "Asansol",
+      "probe_recs": 341
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 333,
+      "market_id": 2637,
+      "market_name": "Kandi",
+      "probe_recs": 333
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 3629,
+      "market_name": "Khatra",
+      "probe_recs": 302
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 334,
+      "market_id": 350,
+      "market_name": "Bolpur",
+      "probe_recs": 295
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 410,
+      "market_id": 426,
+      "market_name": "Bhatapara",
+      "probe_recs": 234
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 433,
+      "market_name": "Munguli",
+      "probe_recs": 221
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 191
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 407,
+      "market_id": 431,
+      "market_name": "Kawardha",
+      "probe_recs": 151
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 432,
+      "market_name": "Bilaspur",
+      "probe_recs": 140
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 409,
+      "market_id": 4043,
+      "market_name": "Saja",
+      "probe_recs": 108
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 130,
+      "market_id": 669,
+      "market_name": "Udaipur (Grain)",
+      "probe_recs": 506
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 120,
+      "market_id": 8330,
+      "market_name": "Dooni",
+      "probe_recs": 282
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 109,
+      "market_id": 3140,
+      "market_name": "Mandawari",
+      "probe_recs": 281
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 120,
+      "market_id": 1524,
+      "market_name": "Deoli",
+      "probe_recs": 270
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 121,
+      "market_id": 262,
+      "market_name": "Bundi",
+      "probe_recs": 264
+    },
+    {
+      "commodity_id": 1,
+      "commodity_name": "Wheat",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 129,
+      "market_id": 1557,
+      "market_name": "Khanpur",
+      "probe_recs": 262
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 520,
+      "market_id": 1424,
+      "market_name": "Alibagh",
+      "probe_recs": 336
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 520,
+      "market_id": 2065,
+      "market_name": "Murud",
+      "probe_recs": 336
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 517,
+      "market_id": 2068,
+      "market_name": "Palghar",
+      "probe_recs": 313
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 526,
+      "market_id": 176,
+      "market_name": "Solapur",
+      "probe_recs": 257
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 520,
+      "market_id": 2064,
+      "market_name": "Mangaon",
+      "probe_recs": 243
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 517,
+      "market_id": 1429,
+      "market_name": "Ulhasnagar",
+      "probe_recs": 232
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 195,
+      "market_id": 692,
+      "market_name": "Gazipur",
+      "probe_recs": 420
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 172,
+      "market_id": 1923,
+      "market_name": "Bindki",
+      "probe_recs": 363
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 158,
+      "market_id": 683,
+      "market_name": "Raibareilly",
+      "probe_recs": 335
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 158,
+      "market_id": 2585,
+      "market_name": "Lalganj",
+      "probe_recs": 333
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 156,
+      "market_id": 1196,
+      "market_name": "Unnao",
+      "probe_recs": 332
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 173,
+      "market_id": 686,
+      "market_name": "Pratapgarh",
+      "probe_recs": 330
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 336,
+      "market_id": 2638,
+      "market_name": "Kalyani",
+      "probe_recs": 891
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 338,
+      "market_id": 4341,
+      "market_name": "Kalipur",
+      "probe_recs": 706
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 835,
+      "market_name": "Bishnupur(Bankura)",
+      "probe_recs": 701
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3630,
+      "market_name": "Durgapur",
+      "probe_recs": 688
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 351,
+      "market_name": "Kalna",
+      "probe_recs": 676
+    },
+    {
+      "commodity_id": 3,
+      "commodity_name": "Rice",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 341,
+      "market_id": 833,
+      "market_name": "Ramkrishanpur(Howrah)",
+      "probe_recs": 664
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 446,
+      "market_id": 1835,
+      "market_name": "Obedullaganj",
+      "probe_recs": 1018
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 446,
+      "market_id": 2436,
+      "market_name": "Bareli",
+      "probe_recs": 850
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 449,
+      "market_id": 553,
+      "market_name": "Pipariya",
+      "probe_recs": 764
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 446,
+      "market_id": 558,
+      "market_name": "Raisen",
+      "probe_recs": 662
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 443,
+      "market_id": 199,
+      "market_name": "Vidisha",
+      "probe_recs": 594
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 452,
+      "market_id": 2433,
+      "market_name": "Gadarwada",
+      "probe_recs": 568
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 412,
+      "market_id": 184,
+      "market_name": "Kurud",
+      "probe_recs": 1360
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 802
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 412,
+      "market_id": 183,
+      "market_name": "Dhamtari",
+      "probe_recs": 709
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 433,
+      "market_name": "Munguli",
+      "probe_recs": 419
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 409,
+      "market_id": 429,
+      "market_name": "Balod",
+      "probe_recs": 367
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 2755,
+      "market_name": "Pendraroad",
+      "probe_recs": 331
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 121,
+      "market_id": 262,
+      "market_name": "Bundi",
+      "probe_recs": 267
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 128,
+      "market_id": 258,
+      "market_name": "Baran",
+      "probe_recs": 251
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 127,
+      "market_id": 281,
+      "market_name": "Kota",
+      "probe_recs": 249
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 272,
+      "market_name": "Pilibanga",
+      "probe_recs": 111
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 2859,
+      "market_name": "Hanumangarh Town",
+      "probe_recs": 97
+    },
+    {
+      "commodity_id": 2,
+      "commodity_name": "Paddy(Dhan)(Common)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 270,
+      "market_name": "Hanumangarh",
+      "probe_recs": 73
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 505,
+      "market_id": 163,
+      "market_name": "Nagpur",
+      "probe_recs": 366
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 522,
+      "market_id": 1433,
+      "market_name": "Shevgaon",
+      "probe_recs": 326
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 4751,
+      "market_name": "Pune(Manjri)",
+      "probe_recs": 320
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 516,
+      "market_id": 169,
+      "market_name": "Lasalgaon",
+      "probe_recs": 307
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 516,
+      "market_id": 4750,
+      "market_name": "Lasalgaon(Vinchur)",
+      "probe_recs": 306
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 516,
+      "market_id": 168,
+      "market_name": "Nasik",
+      "probe_recs": 301
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 175,
+      "market_id": 1898,
+      "market_name": "Ajuha",
+      "probe_recs": 350
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 142,
+      "market_id": 1958,
+      "market_name": "Gulavati",
+      "probe_recs": 349
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 151,
+      "market_id": 339,
+      "market_name": "Pilibhit",
+      "probe_recs": 348
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 135,
+      "market_id": 1963,
+      "market_name": "Sambhal",
+      "probe_recs": 347
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 152,
+      "market_id": 342,
+      "market_name": "Puwaha",
+      "probe_recs": 345
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 183,
+      "market_id": 2605,
+      "market_name": "Nawabganj",
+      "probe_recs": 345
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 439,
+      "market_id": 3873,
+      "market_name": "Indore",
+      "probe_recs": 624
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 432,
+      "market_id": 190,
+      "market_name": "Neemuch",
+      "probe_recs": 409
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 434,
+      "market_id": 2431,
+      "market_name": "Sailana",
+      "probe_recs": 372
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 434,
+      "market_id": 551,
+      "market_name": "Ratlam",
+      "probe_recs": 366
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 433,
+      "market_id": 546,
+      "market_name": "Mandsaur",
+      "probe_recs": 348
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 438,
+      "market_id": 2419,
+      "market_name": "Badnawar",
+      "probe_recs": 322
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 351,
+      "market_name": "Kalna",
+      "probe_recs": 568
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 332,
+      "market_id": 358,
+      "market_name": "English Bazar",
+      "probe_recs": 389
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 338,
+      "market_id": 4341,
+      "market_name": "Kalipur",
+      "probe_recs": 352
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 835,
+      "market_name": "Bishnupur(Bankura)",
+      "probe_recs": 351
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 338,
+      "market_id": 856,
+      "market_name": "Champadanga",
+      "probe_recs": 349
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3947,
+      "market_name": "Asansol",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 409,
+      "market_id": 428,
+      "market_name": "Durg",
+      "probe_recs": 283
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 263
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 403,
+      "market_id": 436,
+      "market_name": "Raigarh",
+      "probe_recs": 249
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 4055,
+      "market_name": "Tiphra",
+      "probe_recs": 246
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 432,
+      "market_name": "Bilaspur",
+      "probe_recs": 53
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 415,
+      "market_id": 2415,
+      "market_name": "Narayanpur",
+      "probe_recs": 1
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1538,
+      "market_name": "Goluwala",
+      "probe_recs": 330
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1540,
+      "market_name": "Rawatsar",
+      "probe_recs": 325
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 111,
+      "market_id": 664,
+      "market_name": "Sikar",
+      "probe_recs": 305
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1537,
+      "market_name": "Bhadara",
+      "probe_recs": 303
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 271,
+      "market_name": "Sangriya",
+      "probe_recs": 297
+    },
+    {
+      "commodity_id": 23,
+      "commodity_name": "Onion",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 110,
+      "market_id": 3146,
+      "market_name": "Chomu (F&V)",
+      "probe_recs": 288
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 4751,
+      "market_name": "Pune(Manjri)",
+      "probe_recs": 315
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 4752,
+      "market_name": "Pune(Moshi)",
+      "probe_recs": 287
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 522,
+      "market_id": 2382,
+      "market_name": "Rahata",
+      "probe_recs": 285
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 172,
+      "market_name": "Pune",
+      "probe_recs": 274
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 2495,
+      "market_name": "Pune(Khadiki)",
+      "probe_recs": 271
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 503,
+      "market_id": 3111,
+      "market_name": "Amrawati(Frui & Veg. Market)",
+      "probe_recs": 267
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 175,
+      "market_id": 1898,
+      "market_name": "Ajuha",
+      "probe_recs": 349
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 142,
+      "market_id": 1958,
+      "market_name": "Gulavati",
+      "probe_recs": 348
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 151,
+      "market_id": 339,
+      "market_name": "Pilibhit",
+      "probe_recs": 348
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 135,
+      "market_id": 1963,
+      "market_name": "Sambhal",
+      "probe_recs": 347
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 152,
+      "market_id": 342,
+      "market_name": "Puwaha",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 183,
+      "market_id": 2605,
+      "market_name": "Nawabganj",
+      "probe_recs": 345
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 435,
+      "market_id": 197,
+      "market_name": "Ujjain",
+      "probe_recs": 336
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 439,
+      "market_id": 3873,
+      "market_name": "Indore",
+      "probe_recs": 302
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 419,
+      "market_id": 554,
+      "market_name": "Morena",
+      "probe_recs": 245
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 419,
+      "market_id": 2743,
+      "market_name": "Porsa",
+      "probe_recs": 231
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 436,
+      "market_id": 193,
+      "market_name": "Sajapur",
+      "probe_recs": 147
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 464,
+      "market_id": 10614,
+      "market_name": "Petlawad(F&V)",
+      "probe_recs": 77
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3630,
+      "market_name": "Durgapur",
+      "probe_recs": 688
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 328,
+      "market_id": 703,
+      "market_name": "Alipurduar",
+      "probe_recs": 640
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 328,
+      "market_id": 4333,
+      "market_name": "Falakata",
+      "probe_recs": 633
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 327,
+      "market_id": 4335,
+      "market_name": "Karsiyang(Matigara)",
+      "probe_recs": 585
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 351,
+      "market_name": "Kalna",
+      "probe_recs": 437
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 327,
+      "market_id": 704,
+      "market_name": "Kalimpong",
+      "probe_recs": 434
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 403,
+      "market_id": 436,
+      "market_name": "Raigarh",
+      "probe_recs": 312
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 409,
+      "market_id": 428,
+      "market_name": "Durg",
+      "probe_recs": 281
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 257
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 4055,
+      "market_name": "Tiphra",
+      "probe_recs": 244
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 432,
+      "market_name": "Bilaspur",
+      "probe_recs": 53
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 2749,
+      "market_name": "Gandai",
+      "probe_recs": 18
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1538,
+      "market_name": "Goluwala",
+      "probe_recs": 331
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1540,
+      "market_name": "Rawatsar",
+      "probe_recs": 322
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1537,
+      "market_name": "Bhadara",
+      "probe_recs": 305
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 111,
+      "market_id": 664,
+      "market_name": "Sikar",
+      "probe_recs": 305
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 2858,
+      "market_name": "Alwar (F&V)",
+      "probe_recs": 303
+    },
+    {
+      "commodity_id": 24,
+      "commodity_name": "Potato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 271,
+      "market_name": "Sangriya",
+      "probe_recs": 296
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 505,
+      "market_id": 163,
+      "market_name": "Nagpur",
+      "probe_recs": 432
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 2494,
+      "market_name": "Pune(Pimpri)",
+      "probe_recs": 332
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 4751,
+      "market_name": "Pune(Manjri)",
+      "probe_recs": 321
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 505,
+      "market_id": 3972,
+      "market_name": "Kamthi",
+      "probe_recs": 298
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 4752,
+      "market_name": "Pune(Moshi)",
+      "probe_recs": 286
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 172,
+      "market_name": "Pune",
+      "probe_recs": 286
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 132,
+      "market_id": 340,
+      "market_name": "Saharanpur",
+      "probe_recs": 369
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 175,
+      "market_id": 1898,
+      "market_name": "Ajuha",
+      "probe_recs": 349
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 151,
+      "market_id": 339,
+      "market_name": "Pilibhit",
+      "probe_recs": 348
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 152,
+      "market_id": 342,
+      "market_name": "Puwaha",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 183,
+      "market_id": 2605,
+      "market_name": "Nawabganj",
+      "probe_recs": 345
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 151,
+      "market_id": 1906,
+      "market_name": "Puranpur",
+      "probe_recs": 344
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 464,
+      "market_id": 10614,
+      "market_name": "Petlawad(F&V)",
+      "probe_recs": 152
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 419,
+      "market_id": 554,
+      "market_name": "Morena",
+      "probe_recs": 105
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 419,
+      "market_id": 2743,
+      "market_name": "Porsa",
+      "probe_recs": 86
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 466,
+      "market_id": 10625,
+      "market_name": "Sanawad(F&V)",
+      "probe_recs": 77
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 442,
+      "market_id": 10627,
+      "market_name": "Sarangpur(F&V)",
+      "probe_recs": 75
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 448,
+      "market_id": 10648,
+      "market_name": "Timarni(F&V)",
+      "probe_recs": 75
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 338,
+      "market_id": 4341,
+      "market_name": "Kalipur",
+      "probe_recs": 352
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 3629,
+      "market_name": "Khatra",
+      "probe_recs": 350
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 338,
+      "market_id": 856,
+      "market_name": "Champadanga",
+      "probe_recs": 349
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3947,
+      "market_name": "Asansol",
+      "probe_recs": 344
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3630,
+      "market_name": "Durgapur",
+      "probe_recs": 344
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 337,
+      "market_id": 348,
+      "market_name": "Barasat",
+      "probe_recs": 340
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 403,
+      "market_id": 436,
+      "market_name": "Raigarh",
+      "probe_recs": 322
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 409,
+      "market_id": 428,
+      "market_name": "Durg",
+      "probe_recs": 282
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 264
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 4055,
+      "market_name": "Tiphra",
+      "probe_recs": 250
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 432,
+      "market_name": "Bilaspur",
+      "probe_recs": 52
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 2749,
+      "market_name": "Gandai",
+      "probe_recs": 18
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1538,
+      "market_name": "Goluwala",
+      "probe_recs": 322
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1540,
+      "market_name": "Rawatsar",
+      "probe_recs": 315
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 111,
+      "market_id": 664,
+      "market_name": "Sikar",
+      "probe_recs": 304
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 100,
+      "market_id": 1537,
+      "market_name": "Bhadara",
+      "probe_recs": 301
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 2858,
+      "market_name": "Alwar (F&V)",
+      "probe_recs": 300
+    },
+    {
+      "commodity_id": 78,
+      "commodity_name": "Tomato",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 123,
+      "market_id": 1570,
+      "market_name": "Rajsamand",
+      "probe_recs": 298
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 501,
+      "market_id": 154,
+      "market_name": "Akola",
+      "probe_recs": 360
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 514,
+      "market_id": 158,
+      "market_name": "Jalana",
+      "probe_recs": 318
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 521,
+      "market_id": 172,
+      "market_name": "Pune",
+      "probe_recs": 284
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 503,
+      "market_id": 155,
+      "market_name": "Amarawati",
+      "probe_recs": 246
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 504,
+      "market_id": 178,
+      "market_name": "Hinganghat",
+      "probe_recs": 230
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 516,
+      "market_id": 169,
+      "market_name": "Lasalgaon",
+      "probe_recs": 226
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 196,
+      "market_id": 1897,
+      "market_name": "Chandoli",
+      "probe_recs": 311
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 156,
+      "market_id": 1196,
+      "market_name": "Unnao",
+      "probe_recs": 310
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 183,
+      "market_id": 684,
+      "market_name": "Gonda",
+      "probe_recs": 307
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 194,
+      "market_id": 1955,
+      "market_name": "Mugrabaadshahpur",
+      "probe_recs": 302
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 162,
+      "market_id": 2583,
+      "market_name": "Achalda",
+      "probe_recs": 298
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 159,
+      "market_id": 1911,
+      "market_name": "Kayamganj",
+      "probe_recs": 297
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 448,
+      "market_id": 1126,
+      "market_name": "Harda",
+      "probe_recs": 362
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 445,
+      "market_id": 550,
+      "market_name": "Sehore",
+      "probe_recs": 344
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 450,
+      "market_id": 188,
+      "market_name": "Katni",
+      "probe_recs": 320
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 428,
+      "market_id": 565,
+      "market_name": "Damoh",
+      "probe_recs": 301
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 452,
+      "market_id": 2433,
+      "market_name": "Gadarwada",
+      "probe_recs": 275
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 447,
+      "market_id": 555,
+      "market_name": "Betul",
+      "probe_recs": 271
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 344,
+      "market_id": 698,
+      "market_name": "Medinipur(West)",
+      "probe_recs": 291
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 433,
+      "market_name": "Munguli",
+      "probe_recs": 235
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 410,
+      "market_id": 426,
+      "market_name": "Bhatapara",
+      "probe_recs": 226
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 196
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 407,
+      "market_id": 431,
+      "market_name": "Kawardha",
+      "probe_recs": 177
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 413,
+      "market_id": 2770,
+      "market_name": "Sambalpur",
+      "probe_recs": 15
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 410,
+      "market_id": 2398,
+      "market_name": "Abhanpur",
+      "probe_recs": 12
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 128,
+      "market_id": 258,
+      "market_name": "Baran",
+      "probe_recs": 262
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 127,
+      "market_id": 281,
+      "market_name": "Kota",
+      "probe_recs": 245
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 119,
+      "market_id": 1185,
+      "market_name": "Madanganj Kishangarh",
+      "probe_recs": 226
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 120,
+      "market_id": 1526,
+      "market_name": "Malpura",
+      "probe_recs": 216
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 129,
+      "market_id": 1553,
+      "market_name": "Bhawani Mandi",
+      "probe_recs": 216
+    },
+    {
+      "commodity_id": 6,
+      "commodity_name": "Bengal Gram(Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 129,
+      "market_id": 1557,
+      "market_name": "Khanpur",
+      "probe_recs": 202
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 519,
+      "market_id": 162,
+      "market_name": "Mumbai",
+      "probe_recs": 183
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 514,
+      "market_id": 158,
+      "market_name": "Jalana",
+      "probe_recs": 63
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 501,
+      "market_id": 154,
+      "market_name": "Akola",
+      "probe_recs": 56
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 506,
+      "market_id": 1351,
+      "market_name": "Bhandara",
+      "probe_recs": 46
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 500,
+      "market_id": 156,
+      "market_name": "Khamgaon",
+      "probe_recs": 42
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 524,
+      "market_id": 1825,
+      "market_name": "Ahmedpur",
+      "probe_recs": 31
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 168,
+      "market_id": 1970,
+      "market_name": "Bharuasumerpur",
+      "probe_recs": 388
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 196,
+      "market_id": 1897,
+      "market_name": "Chandoli",
+      "probe_recs": 303
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 162,
+      "market_id": 826,
+      "market_name": "Auraiya",
+      "probe_recs": 298
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 163,
+      "market_id": 1194,
+      "market_name": "Pukharayan",
+      "probe_recs": 291
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 157,
+      "market_id": 334,
+      "market_name": "Lucknow",
+      "probe_recs": 288
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 155,
+      "market_id": 1952,
+      "market_name": "Madhoganj",
+      "probe_recs": 286
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 450,
+      "market_id": 188,
+      "market_name": "Katni",
+      "probe_recs": 441
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 420,
+      "market_id": 1383,
+      "market_name": "Gohad",
+      "probe_recs": 345
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 459,
+      "market_id": 185,
+      "market_name": "Ashoknagar",
+      "probe_recs": 332
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 421,
+      "market_id": 545,
+      "market_name": "Lashkar",
+      "probe_recs": 322
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 429,
+      "market_id": 194,
+      "market_name": "Satna",
+      "probe_recs": 314
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 419,
+      "market_id": 2743,
+      "market_name": "Porsa",
+      "probe_recs": 308
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 835,
+      "market_name": "Bishnupur(Bankura)",
+      "probe_recs": 351
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3630,
+      "market_name": "Durgapur",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3947,
+      "market_name": "Asansol",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 339,
+      "market_id": 3629,
+      "market_name": "Khatra",
+      "probe_recs": 306
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 336,
+      "market_id": 362,
+      "market_name": "Karimpur",
+      "probe_recs": 291
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 344,
+      "market_id": 855,
+      "market_name": "Ghatal",
+      "probe_recs": 290
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 138
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 410,
+      "market_id": 426,
+      "market_name": "Bhatapara",
+      "probe_recs": 122
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 401,
+      "market_id": 2763,
+      "market_name": "Ramanujganj",
+      "probe_recs": 11
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 401,
+      "market_id": 2767,
+      "market_name": "Kusmee",
+      "probe_recs": 6
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 402,
+      "market_id": 444,
+      "market_name": "Jaspur",
+      "probe_recs": 6
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 401,
+      "market_id": 438,
+      "market_name": "Ambikapur",
+      "probe_recs": 4
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 109,
+      "market_id": 3140,
+      "market_name": "Mandawari",
+      "probe_recs": 275
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 3149,
+      "market_name": "Barodamev",
+      "probe_recs": 273
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 99,
+      "market_id": 269,
+      "market_name": "Sriganganagar (Grain)",
+      "probe_recs": 272
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 120,
+      "market_id": 1524,
+      "market_name": "Deoli",
+      "probe_recs": 269
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 3161,
+      "market_name": "Laxmangarh (Barodamev)",
+      "probe_recs": 266
+    },
+    {
+      "commodity_id": 12,
+      "commodity_name": "Mustard",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 120,
+      "market_id": 8330,
+      "market_name": "Dooni",
+      "probe_recs": 266
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 501,
+      "market_id": 154,
+      "market_name": "Akola",
+      "probe_recs": 249
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 503,
+      "market_id": 155,
+      "market_name": "Amarawati",
+      "probe_recs": 249
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 504,
+      "market_id": 178,
+      "market_name": "Hinganghat",
+      "probe_recs": 230
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 502,
+      "market_id": 593,
+      "market_name": "Karanja",
+      "probe_recs": 217
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 500,
+      "market_id": 599,
+      "market_name": "Malkapur",
+      "probe_recs": 216
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 27,
+      "state_name": "Maharashtra",
+      "district_id": 505,
+      "market_id": 607,
+      "market_name": "Savner",
+      "probe_recs": 200
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 163,
+      "market_id": 1194,
+      "market_name": "Pukharayan",
+      "probe_recs": 291
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 140,
+      "market_id": 324,
+      "market_name": "Ghaziabad",
+      "probe_recs": 287
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 199,
+      "market_id": 691,
+      "market_name": "Mirzapur",
+      "probe_recs": 280
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 143,
+      "market_id": 1894,
+      "market_name": "Aligarh",
+      "probe_recs": 275
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 164,
+      "market_id": 330,
+      "market_name": "Kanpur(Grain)",
+      "probe_recs": 274
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 9,
+      "state_name": "Uttar Pradesh",
+      "district_id": 138,
+      "market_id": 336,
+      "market_name": "Meerut",
+      "probe_recs": 218
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 450,
+      "market_id": 188,
+      "market_name": "Katni",
+      "probe_recs": 309
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 449,
+      "market_id": 553,
+      "market_name": "Pipariya",
+      "probe_recs": 284
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 429,
+      "market_id": 194,
+      "market_name": "Satna",
+      "probe_recs": 257
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 451,
+      "market_id": 559,
+      "market_name": "Jabalpur",
+      "probe_recs": 226
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 428,
+      "market_id": 565,
+      "market_name": "Damoh",
+      "probe_recs": 205
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 23,
+      "state_name": "Madhya Pradesh",
+      "district_id": 439,
+      "market_id": 3873,
+      "market_name": "Indore",
+      "probe_recs": 195
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 19,
+      "state_name": "West Bengal",
+      "district_id": 335,
+      "market_id": 3947,
+      "market_name": "Asansol",
+      "probe_recs": 346
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 410,
+      "market_id": 426,
+      "market_name": "Bhatapara",
+      "probe_recs": 159
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 408,
+      "market_id": 192,
+      "market_name": "Rajnandgaon",
+      "probe_recs": 119
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 407,
+      "market_id": 431,
+      "market_name": "Kawardha",
+      "probe_recs": 108
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 406,
+      "market_id": 433,
+      "market_name": "Munguli",
+      "probe_recs": 65
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 402,
+      "market_id": 444,
+      "market_name": "Jaspur",
+      "probe_recs": 6
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 22,
+      "state_name": "Chhattisgarh",
+      "district_id": 401,
+      "market_id": 2763,
+      "market_name": "Ramanujganj",
+      "probe_recs": 5
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 110,
+      "market_id": 1780,
+      "market_name": "Chaksu",
+      "probe_recs": 51
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 131,
+      "market_id": 264,
+      "market_name": "Pratapgarh",
+      "probe_recs": 46
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 256,
+      "market_name": "Khairthal",
+      "probe_recs": 26
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 121,
+      "market_id": 2852,
+      "market_name": "Sumerganj",
+      "probe_recs": 25
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 109,
+      "market_id": 654,
+      "market_name": "Lalsot",
+      "probe_recs": 23
+    },
+    {
+      "commodity_id": 49,
+      "commodity_name": "Arhar (Tur/Red Gram)(Whole)",
+      "state_id": 8,
+      "state_name": "Rajasthan",
+      "district_id": 104,
+      "market_id": 255,
+      "market_name": "Alwar",
+      "probe_recs": 14
+    }
+  ]
+}

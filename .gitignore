@@ -1,10 +1,27 @@
+# secrets
 .env
 *.env
-__pycache__/
+
+# environments / caches
 .venv/
 venv/
-data/
-reports/
-*.parquet
-*.log
+__pycache__/
+.ruff_cache/
 .claude/
+
+# data and logs (large, regenerable, or subject to CEDA terms)
+data/
+logs/
+*.log
+*.parquet
+internal/
+
+# reports: keep the curated, human-readable outputs; ignore caches and scratch
+reports/*
+!reports/model_comparison.md
+!reports/spoilage_diagnostics.md
+!reports/state_qualification.md
+!reports/stress_run.md
+!reports/market_selection.json
+!reports/quality_report.json
+!reports/episodes_market_crop.csv

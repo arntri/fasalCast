@@ -37,15 +37,11 @@ from ceda_client import CedaClient, CedaError
 
 PROBE = Path("data/probe")
 
-# The staple basket (Architecture 2.3). ids verified via /commodities discovery.
-# Some physical commodities are split across several catalogue labels; we tag
-# the candidates with a shared `group` and probe ALL of them, then keep — per
-# state — whichever id reports denser (see resolve_groups). Two such splits:
-#   * Red Gram:  7 "Red Gram"  vs  49 "Arhar (Tur/Red Gram)(Whole)".
-#   * Rice:      3 "Rice"       vs  2 "Paddy(Dhan)(Common)".  Measured 2026-07:
-#     id 3 has ~0 records in Madhya Pradesh (and Bihar) while id 2 has thousands
-#     there — MP files paddy, not "Rice" — yet id 3 is denser in MH/UP/WB, so the
-#     winner must be chosen state-by-state, not nationally.
+# The staple basket (docs/ARCHITECTURE.md 2.3). Some crops are split across several
+# catalogue ids, tagged with a shared `group`; all are probed and the denser id is
+# kept PER STATE (see resolve_groups):
+#   * Red Gram: 7 "Red Gram" vs 49 "Arhar (Tur/Red Gram)(Whole)".
+#   * Rice: 3 "Rice" vs 2 "Paddy(Dhan)(Common)" (MP files paddy, not rice).
 CROPS = [
     {"id": 1,  "name": "Wheat"},
     {"id": 3,  "name": "Rice", "group": "rice"},
@@ -59,14 +55,9 @@ CROPS = [
     {"id": 49, "name": "Arhar (Tur/Red Gram)(Whole)", "group": "redgram"},
 ]
 
-# 6 states (Architecture 2.3). census_state_id — verified equal to the state_id
-# the /markets and /prices endpoints expect (Maharashtra=27, Nashik=516 matched
-# the already-working config).
-# Phase-A geography after Scope-Correction Task 3 (reports/state_qualification.md):
-# dropped Karnataka(29) + Bihar(10) for structural under-reporting, added the two
-# qualified poverty-relevant replacements Chhattisgarh(22) + Rajasthan(8). This is
-# the set the write-config aggregation iterates; it must match watch_progress.py's
-# TARGET_STATES and the qualification report.
+# Phase-A states, chosen by the qualification probe (reports/state_qualification.md):
+# Karnataka(29) and Bihar(10) dropped for structural under-reporting; Chhattisgarh(22)
+# and Rajasthan(8) qualified. Keep in sync with scripts/watch_progress.py.
 STATES = [
     {"id": 27, "name": "Maharashtra"},
     {"id": 9,  "name": "Uttar Pradesh"},

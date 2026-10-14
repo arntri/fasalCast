@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Live status of all 8 probe shards. Use with:  watch -n 2 bash ~/mandi-ews/watch_shards.sh
-cd "$(dirname "$0")" || exit 1
+# Live status of all 8 probe shards. Use with:  watch -n 2 bash scripts/watch_shards.sh
+cd "$(dirname "$0")/.." || exit 1
 printf '%-14s  %-6s  %-6s  %s\n' "SHARD" "STATUS" "FILES" "LATEST"
 printf '%.0s-' {1..90}; echo
 for f in logs/shard_c*.log; do

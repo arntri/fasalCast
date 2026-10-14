@@ -14,7 +14,6 @@ The rule is never fit to anything. Output columns:
 level, id, start, peak, end, peak_stress, n_weeks.
 """
 
-import numpy as np
 import pandas as pd
 
 THRESH_Q = 0.95

@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from pairs import viable_pairs                                    # noqa: E402
-from features import make_features, default_cutoffs, HORIZON, HEAVY_RAIN_MM  # noqa: E402
+from features import make_features, default_cutoffs  # noqa: E402
 import evaluate as ev                                            # noqa: E402
 import basket as bk                                              # noqa: E402
 import stress as sx                                              # noqa: E402
@@ -124,7 +124,7 @@ def test_weather_features_trailing_only():
         # days_since_heavy_rain must reference a PAST heavy-rain day (<= cutoff)
         if pd.notna(row.days_since_heavy_rain):
             assert row.days_since_heavy_rain >= 0
-    return f"20 sampled rows: rain_sum7 == hand-computed trailing (<=cutoff) window"
+    return "20 sampled rows: rain_sum7 == hand-computed trailing (<=cutoff) window"
 
 
 def _basket_rows(day, groups_present, district=1, val=1.0):

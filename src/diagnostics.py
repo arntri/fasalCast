@@ -192,7 +192,8 @@ def report(df, out_path="reports/spoilage_diagnostics.md"):
             ("SHORTAGE", act_sh, [("mean lgbm", "mean_short"), ("quantile head", "q_short")])]:
         for label, col in pred_prefixes:
             p, r, f = prf_row(col, actual_col)
-            fmt = lambda x: "—" if x != x else f"{x:.2f}"
+            def fmt(x):
+                return "—" if x != x else f"{x:.2f}"
             L.append(f"| {flag_name} | {label} | {fmt(p)} | {fmt(r)} | {fmt(f)} |")
 
     # ---- honest verdict ----
@@ -218,12 +219,12 @@ def report(df, out_path="reports/spoilage_diagnostics.md"):
              f"the estimator with the tail the flag targets, α set to the flag's own "
              f"deciles — NOT searched on these folds), but on this panel it still "
              f"can't cross the arrivals threshold.")
-    L.append(f"- **What would actually move it:** (1) more markets — widening to Pune "
-             f"(Task 3) adds spoilage events and re-tests this on real signal; (2) if "
-             f"a validation split (earliest 60% of folds, frozen) justified it, a more "
-             f"aggressive arrivals quantile would trade precision for recall — a "
-             f"deliberate operating-point choice, not test-fold tuning. Reported as "
-             f"found; nothing tuned on these folds.\n")
+    L.append("- **What would actually move it:** (1) more markets — widening to Pune "
+             "(Task 3) adds spoilage events and re-tests this on real signal; (2) if "
+             "a validation split (earliest 60% of folds, frozen) justified it, a more "
+             "aggressive arrivals quantile would trade precision for recall — a "
+             "deliberate operating-point choice, not test-fold tuning. Reported as "
+             "found; nothing tuned on these folds.\n")
 
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text("\n".join(L))

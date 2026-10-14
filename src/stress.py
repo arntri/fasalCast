@@ -70,7 +70,7 @@ def series_components(g):
 
     la = np.log1p(g["arrivals"].where(g["arrivals"] >= 0))
     smooth = la.rolling(SMOOTH_DAYS, center=True, min_periods=5).median()
-    ref = pd.concat([smooth.shift(l) for l in SEASONAL_LAGS], axis=1).median(axis=1)
+    ref = pd.concat([smooth.shift(lag) for lag in SEASONAL_LAGS], axis=1).median(axis=1)
     resid = la - ref
     rmed = _roll_med(resid)
     out["arrival_deficit"] = (-(resid - rmed) / _roll_mad(resid, rmed)).clip(-CLIP, CLIP)

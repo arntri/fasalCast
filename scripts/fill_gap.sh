@@ -6,14 +6,14 @@
 #
 # Shard ONE STATE PER KEY (collision-free: all geo_* caches already exist and
 # probe_*/mkts_* files are disjoint by state id). Run in two terminals:
-#   export CEDA_API_KEY='<key A>'; ./fill_gap.sh 22
-#   export CEDA_API_KEY='<key B>'; ./fill_gap.sh 8
+#   export CEDA_API_KEY='<key A>'; scripts/fill_gap.sh 22
+#   export CEDA_API_KEY='<key B>'; scripts/fill_gap.sh 8
 set -uo pipefail
 
-sid="${1:?usage: ./fill_gap.sh <state-id>   e.g.  ./fill_gap.sh 22   (CG)   or   ./fill_gap.sh 8 (RJ)}"
+sid="${1:?usage: scripts/fill_gap.sh <state-id>   e.g.  scripts/fill_gap.sh 22   (CG)   or   scripts/fill_gap.sh 8 (RJ)}"
 : "${CEDA_API_KEY:?CEDA_API_KEY not exported — run: export CEDA_API_KEY='...'}"
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 mkdir -p logs
 log="logs/gap_s${sid}.log"
 

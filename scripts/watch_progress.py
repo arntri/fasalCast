@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Per-second PROGRESS report — districts probed / districts total, per shard.
 
-    watch -n 1 python3 ~/mandi-ews/watch_progress.py
+    watch -n 1 python3 scripts/watch_progress.py
 
 Why this and not the log: select_markets.py only prints a summary line when a
 whole (crop, state) cell finishes, so the log looks frozen for minutes. But the
@@ -19,7 +19,7 @@ import json
 import re
 from pathlib import Path
 
-PROBE = Path(__file__).resolve().parent / "data" / "probe"
+PROBE = Path(__file__).resolve().parent.parent / "data" / "probe"
 # Phase-A geography after Scope-Correction Task 3: dropped Bihar(10) + Karnataka(29)
 # for structural data reasons, added qualified Chhattisgarh(22) + Rajasthan(8).
 # See reports/state_qualification.md.

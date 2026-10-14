@@ -202,7 +202,7 @@ def main():
     df = pd.DataFrame(data)
     quality_report(df, from_date, to_date)
 
-    print(f"\n[6/7] POST /agmarknet/quantities, same market & range...")
+    print("\n[6/7] POST /agmarknet/quantities, same market & range...")
     qdata = client.quantities(onion_id, state_id, [district_id], [mkt[m_id]],
                               from_date, to_date)
     if qdata:

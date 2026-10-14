@@ -1,162 +1,170 @@
-# Mandi Early-Warning System (FasalCast)
+# FasalCast
 
-Forecasts weekly arrival volumes and modal prices for volatile staple crops
-(onion/tomato/potato) in Indian wholesale markets (APMC mandis), and flags two
-risks a week ahead: **spoilage/waste risk** (volume spike + price crash) and
-**shortage/access risk** (near-zero arrivals + price spike).
+**A leakage-safe, walk-forward-validated early-warning pipeline for food-market stress in Indian wholesale mandis.**
 
-Framed as an early-warning system for supply-demand imbalance — the headline
-metric is flag precision/recall at lead time, not forecast RMSE.
+FasalCast ingests daily price and arrival records for staple crops from India's APMC
+mandis (via the [CEDA](https://ceda.ashoka.edu.in/) Agri Market API, a cleaned mirror
+of Agmarknet), turns them into forecasts and risk flags, and builds a continuous
+market-stress index with mechanically defined crisis episodes.
 
-## Design principles (enforced in code, not by memory)
-- **No leakage.** Labels and features use trailing information only; weather
-  features are lagged/recent actuals, never future or same-(target-)week.
-  `features.py`'s self-check asserts `max(feature-source date − cutoff) ≤ 0`
-  over every row.
-- **Temporal validation only.** Walk-forward, expanding-window weekly folds
-  (`src/evaluate.py`). Random splits are structurally impossible here.
-- **Baseline first, baseline-gated.** Seasonal-naive is model #1. Any ML model
-  must beat it **on the same folds** or it doesn't ship. The harness is
-  restricted to data-quality-viable pairs and scores every model on an
-  identical fold/instance population (see below).
-- **No fabrication.** Every number in this README and in
-  `reports/model_comparison.md` is produced by running the code; none is
-  hand-entered or extrapolated.
+> **Status: working research prototype, not a finished product.** The forecasting
+> and flag layers are complete and tested on **one crop at two adjacent markets
+> (onion, Lasalgaon)**. The nationwide stress index is built and tested, but the
+> data backfill that would feed it is only about 10% complete. See
+> [Honest limitations](#honest-limitations) before drawing conclusions.
 
-## Results (real, walk-forward, `python src/evaluate.py`)
+---
 
-Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
-**Lasalgaon-Vinchur 4750**), scored on **750 identical weekly folds**
-(2008→2025). Spoilage events: 6; shortage events: 35.
+## Highlights
 
-| model | price MAE | price sMAPE | arrivals MAE | arrivals sMAPE | spoilage P/R/F1 | shortage P/R/F1 |
-|---|--:|--:|--:|--:|:--:|:--:|
-| `seasonal_naive` (baseline) | 935 | 57.1% | 38,670 | 65.8% | 0.00/0.00/— | 0.05/0.03/0.04 |
-| `persistence` (naive baseline) | **190** | **10.9%** | 20,183 | **42.6%** | 0.17/0.17/0.17 | 0.48/0.37/0.42 |
-| `lgbm_residual` (post-hoc) | 198 | 12.2% | **19,965** | 44.8% | —/0.00/— | 0.53/0.46/0.49 |
-| `lgbm` | 250 | 14.5% | 20,067 | 44.9% | —/0.00/— | **0.63/0.49/0.55** |
-| `lgbm_weather` | 254 | 14.8% | 20,003 | 44.6% | —/0.00/— | 0.58/0.43/0.49 |
-| `lgbm_quantile_flags` | — | — | — | — | 0.00/0.00/— | n/a |
+- **Leakage control that is machine-checked, not promised.** Every feature row is
+  asserted to use only data at or before its cutoff; the stress index is verified by a
+  truncation test (recompute on data cut at *T*, every value dated ≤ *T* must be
+  identical). 8 invariant tests cover leakage, unit scale, pair eligibility, weather
+  lag, the basket coverage guard and stress truncation.
+- **Walk-forward only.** Expanding-window weekly folds; random splits are impossible by
+  construction. Every model is scored on an identical fold and instance population.
+- **Pre-registration.** Stress weights and the episode rule are committed to git
+  before they are run on any data, and are never fit to the episodes they are scored on.
+- **Found and fixed silent data traps.** The API reports arrivals in **tonnes** but
+  prices in **Rs/quintal** (a silent 10x error); `/prices` returns unlabeled variety rows;
+  Madhya Pradesh files rice under *Paddy*, not *Rice*. See [docs/DATA_NOTES.md](docs/DATA_NOTES.md).
+- **Evidence-driven scope.** Phase-A states were chosen by a pre-registered density
+  probe, not by hand. Bihar and Karnataka were dropped for measured structural reasons;
+  Chhattisgarh and Rajasthan qualified. See [reports/state_qualification.md](reports/state_qualification.md).
+- **Negative results reported as found**, including a stronger baseline that beats the
+  headline model on price (below).
 
-(`lgbm_quantile_flags` is a spoilage-only operating point — two LightGBM
-**quantile** regressors, not mean regressors — so its regression MAE/sMAPE are
-deliberately biased and shown `—`, and it does not target shortage (`n/a`). See
-the spoilage bullet below and `reports/model_comparison.md`.)
+## Results
 
-- **LightGBM beats the seasonal-naive baseline decisively** (price MAE −73%,
-  arrivals MAE −48%, shortage F1 0.04 → **0.55**), but seasonal-naive is a weak
-  baseline. Against the stronger **persistence** baseline (next week = last
-  week) the picture is mixed, and reported as found: LightGBM **loses on price**
-  (MAE 250 vs 190), is **level on arrivals** (20,067 vs 20,183, −1%), and wins
-  only on the shortage flag (F1 0.55 vs 0.42, on 35 events). Persistence also
-  catches 1 of 6 spoilage events (F1 0.17) where the mean LightGBM catches none.
-  The honest claim is therefore *flag-quality* gains, not price-forecast gains.
-  A **post-hoc** attempt to close the gap (`lgbm_residual`: LightGBM predicts the
-  change from the persistence anchor; params unchanged, nothing tuned, added
-  *after* seeing the persistence result) gets price MAE to 198 — still not below
-  persistence's 190 — and arrivals 19,965 (−1%). It is disclosed as exploratory,
-  not a headline model.
-- **Weather does not materially help.** Lagged rain/temperature features move
-  the numbers within noise (price MAE +4, arrivals MAE −64, shortage F1 −0.06
-  vs plain `lgbm`). For onion at a weekly horizon the price/arrival
-  autoregressive features already carry the seasonal signal. Reported as found.
-- **Spoilage flags are not learnable here — and we know exactly why.** Only 6
-  spoilage events occur in 750 folds. The two mean regressors (`lgbm`,
-  `lgbm_weather`) predict no spoilage flag at all; the tail-aware
-  `lgbm_quantile_flags` head *does* fire spoilage flags but catches **0 of 6**
-  real events (precision/recall 0.00/0.00) — reported honestly as a
-  panel-scored model, not a discarded prototype.
-  `src/diagnostics.py` (→ `reports/spoilage_diagnostics.md`) traces the cause:
-  spoilage is a compound tail (arrivals in the top decile AND price in the
-  bottom decile), and a mean regressor predicts near the centre (median
-  arrivals-percentile 0.33, price 0.49), so it never satisfies the double-AND.
-  The tail-aware fix — a LightGBM **quantile head** (arrivals α=0.90,
-  price α=0.10, α set to the flag's own deciles, not tuned) — fixes the **price
-  half of the flag (crash right on 5/6 events) but not the arrivals half (spike
-  on 0/6)**, so the compound AND still never lands on a true event and every
-  flag it does fire is a false positive. The arrivals spike is close to
-  unpredictable a week ahead from price/arrival history. So the binding
-  constraints are (1) event scarcity (~6 positives) and (2) an unpredictable
-  arrivals spike — the durable fix is **more markets** (Pune widening), not more
-  model. Reported as found.
+Onion at **Lasalgaon (169)** and **Lasalgaon-Vinchur (4750)**, **750 identical weekly
+folds, 2008 to 2025**, 6 spoilage events, 35 shortage events. All numbers come from
+`python src/evaluate.py` and are written to [reports/model_comparison.md](reports/model_comparison.md).
 
-Historical label base rates (`python src/labels.py`, trailing-quantile labels):
-Onion@169 spoilage 2.28% / shortage 2.24%; Onion@4750 spoilage 1.13% /
-shortage 5.11%.
+| model | price MAE | arrivals MAE | shortage P / R / F1 |
+|---|--:|--:|:--:|
+| `seasonal_naive` | 935 | 38,670 | 0.05 / 0.03 / 0.04 |
+| `persistence` (next week = last week) | **190** | 20,183 | 0.48 / 0.37 / 0.42 |
+| `lgbm` | 250 | 20,067 | **0.63 / 0.49 / 0.55** |
+| `lgbm_weather` | 254 | 20,003 | 0.58 / 0.43 / 0.49 |
+| `lgbm_residual` (post-hoc, exploratory) | 198 | **19,965** | 0.53 / 0.46 / 0.49 |
 
-## Data quality findings (the hard-won ones)
-1. **Unlabeled variety rows.** `/prices` returns multiple variety/grade rows
-   per day with **no variety column**; `/quantities` returns one market-level
-   row per day. They can't be reliably paired, so a volume-weighted price is
-   not computable without guessing. Policy (in `clean.py`): arrivals = **sum**
-   of quantity rows, modal = **median** of price rows, min/max = true daily
-   envelope; `n_price_rows`/`n_qty_rows` kept so the aggregation is auditable.
-2. **Tonnes vs quintals (a silent 10× trap).** The API reports `quantity` in
-   **metric tonnes** while prices are **Rs/quintal** — verified against the
-   agmarknet.gov.in portal header. `clean.py` converts arrivals ×10 to quintals
-   so both targets share one basis. `validate.py` also scans for ~10× level
-   shifts as a guard.
-3. **Per-market coverage verdicts** (`min_coverage 0.60`, `min_rows 500`):
-   Onion @ 169 (cov 0.698, OK), 4750 (0.832, OK), 2484/Niphad (0.589, DROP),
-   2488/Pimpalgaon-Saykheda (0.584, DROP). Tomato @ 169 (cov **0.098**, DROP):
-   tomato is barely traded at an onion market. DROP pairs are excluded from the
-   modeling pool entirely — for the baseline as much as for any ML model.
+**How to read this honestly**
 
-## Pipeline
+- LightGBM beats the *seasonal-naive* baseline by a wide margin (price MAE -73%,
+  arrivals MAE -48%, shortage F1 0.04 to 0.55), but seasonal-naive is a weak baseline.
+- Against the stronger **persistence** baseline, LightGBM **loses on price**
+  (250 vs 190), is **level on arrivals** (-1%), and **wins only on the shortage flag**
+  (F1 0.55 vs 0.42, on just 35 events).
+- A post-hoc attempt to close the price gap (`lgbm_residual`, added *after* seeing the
+  persistence result, nothing tuned) still does not beat persistence. It is disclosed as
+  exploratory, not as a headline model.
+- Lagged weather does not help onion at a weekly horizon.
+
+**Spoilage flags are untrainable at this scale, and the repo explains why.** Only 6
+spoilage events occur in 750 folds. A mean regressor predicts near the centre of the
+distribution (median arrivals percentile 0.33, price 0.49), so the compound
+"arrivals in the top decile AND price in the bottom decile" rule never fires. A
+quantile-regression head (alpha set to the flag's own deciles, not tuned) repairs the
+price half (crash caught on 5 of 6 events) but not the arrivals half (0 of 6).
+Details: [reports/spoilage_diagnostics.md](reports/spoilage_diagnostics.md). This finding
+motivated the move from discrete event flags to a continuous stress index.
+
+## Stress index and episodes
+
+`src/stress.py` builds a per-(market, crop) stress score from four trailing-only
+components (price z-score, seasonal arrival deficit, momentum, cross-market
+dispersion) with fixed a-priori weights. `src/episodes.py` defines a crisis episode as
+weekly stress above its trailing p95 for 3 or more consecutive weeks. `src/basket.py`
+aggregates crop groups into a district index and refuses to score a district-day unless
+at least 60% of the basket weight is present.
+
+First run on the data cached so far: **38 series, 81 market-crop episodes**. As a
+descriptive sanity check, the Lasalgaon onion episodes fall on well-known spikes
+(Aug to Oct 2013, Jul to Sep 2015, Nov to Dec 2017, Nov 2019). The rule was not tuned
+to them. The district basket currently scores **zero** district-days because only 3 of
+8 crop groups are backfilled; the coverage guard correctly refuses a thin index.
+
+## Honest limitations
+
+- **Narrow evidence base.** All forecast results are for onion at two *adjacent*
+  Lasalgaon markets, so the 750 folds are not 750 independent trials, and the shortage
+  result rests on 35 events.
+- **Backfill is about 10% done.** The planned phase-A backfill is 10,564 chunks over 278
+  market-crop pairs in 6 states; about 1,037 chunks are on disk. The API's hard limit
+  of 40 requests per hour per key and its 504 storms are the bottleneck.
+- **No early-warning headline yet.** Episode recall, lead time and precision
+  (`warning_eval.py`) are designed but not built, so there is no claim that the stress
+  index warns ahead of crises. It currently *describes* episodes.
+- **Headline model does not beat a naive baseline on price.** See Results.
+- **Red gram is deprioritised** after pathologically slow fetches, and the basket's
+  pulse coverage is Bengal gram only for now.
+- **Data blind spots track need.** The most food-insecure states often have the weakest
+  market data (Bihar, Karnataka, Odisha, Jharkhand failed the qualification rule).
+  Results describe monitorable states, not national coverage.
+- **Market stress is a proxy**, not a measure of hunger.
+
+Full list with reasoning: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Repository layout
+
 ```
-backfill.py -> clean.py -> validate.py -> labels.py -> features.py -> evaluate.py
-(CEDA API,    (aggregate   (quality       (risk       (leakage-safe  (walk-forward,
- resumable     unlabeled    report,        flags,       weekly         seasonal_naive
- chunks)       variety      pair           base         supervised     vs lgbm vs
-               rows, t/qtl) verdicts)      rates)       table)         lgbm+weather)
-weather.py (Open-Meteo archive, no key) feeds lagged weather features into features.py
-pairs.py   (single source of truth for VIABLE_FOR_MODELING pairs; shared by features+evaluate)
+src/
+  ceda_client.py     API client: retries, backoff, Retry-After handling
+  backfill.py        chunked, resumable price/arrival backfill (budget-capped)
+  backfill_batched.py  multi-key fleet using adaptive windows
+  pair_health.py     per-pair failure rates; troubled pairs sort last
+  select_markets.py  density probe + state qualification
+  clean.py           daily panel (tonnes->quintals, variety-row aggregation)
+  validate.py        per-pair coverage verdicts that gate modelling
+  pairs.py           single source of truth for viable pairs
+  labels.py          trailing-quantile spoilage / shortage flags
+  features.py        leakage-safe weekly feature table (+ self-check)
+  weather.py         Open-Meteo archive, lagged features only
+  evaluate.py        walk-forward harness, all models, report writer
+  diagnostics.py     spoilage root-cause analysis
+  stress.py          stress index (pre-registered)
+  episodes.py        crisis-episode rule (pre-registered)
+  basket.py          crop-group basket + 60% coverage guard
+  run_stress.py      builds stress, episodes and basket from cached chunks
+tests/test_invariants.py   8 invariant tests
+scripts/             shell tooling for the multi-key fetch fleet
+docs/                architecture, data notes, limitations
+reports/             generated reports (kept in git for auditability)
+config.yaml          crop groups, backfill targets, label thresholds
 ```
 
-## Run instructions
+## Quick start
+
 ```bash
-pip install -r requirements.txt          # requests, pandas, pyyaml, pyarrow, lightgbm
-export CEDA_API_KEY='...'                 # never commit; .env / *.env are gitignored
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+export CEDA_API_KEY='...'          # request a key from CEDA; never commit it
 
-# 1. Data (resumable; skips completed chunks). --combine-only rebuilds parquets
-#    from existing data/raw without re-fetching.
-python src/backfill.py --from-year 2006
-python src/clean.py
-python src/validate.py data/panel_daily.parquet
-python src/labels.py
-
-# 2. Weather (free, no key; resumable, cached to data/weather/)
-python src/weather.py --from-year 2006
-
-# 3. Features + evaluation (writes reports/model_comparison.md)
-python src/features.py                    # -> data/features_weekly.parquet + leakage self-check
-python src/evaluate.py                    # seasonal_naive vs lgbm vs lgbm_weather
-
-# 4. Optional: invariant tests + spoilage root-cause diagnostics
-python tests/test_invariants.py           # leakage, scale, pairs, weather trailing-only
-python src/diagnostics.py                 # -> reports/spoilage_diagnostics.md
+python src/backfill.py --from-year 2006     # resumable; skips completed chunks
+python src/clean.py && python src/validate.py data/panel_daily.parquet
+python src/weather.py --from-year 2006      # free, no key
+python src/features.py && python src/evaluate.py    # writes reports/model_comparison.md
+python tests/test_invariants.py             # needs the data above
+python src/run_stress.py                 # stress index, episodes, basket
 ```
 
-Data source: CEDA (Ashoka University) Agri Market API — cleaned mirror of
-Agmarknet (Ministry of Agriculture & Farmers Welfare). Used under CEDA's terms
-(credit: Centre for Economic Data & Analysis, Ashoka University). Weather:
-Open-Meteo historical archive.
+Raw data is not redistributed in this repository. The `data/` directory is git-ignored
+and rebuilt by the commands above.
 
-## Status
-- [x] Milestone 1: API integration; real schema handled (envelope unwrap, flat
-      geographies, unlabeled variety rows, flaky endpoints → retries +
-      resumable chunks + caching).
-- [x] Historical backfill (2006→present) + quality report + label base rates.
-- [x] Seasonal-naive baseline (walk-forward, restricted to viable pairs).
-- [x] LightGBM forecaster beats baseline on identical folds (price MAE −73%,
-      arrivals MAE −48%, shortage F1 0.04→0.55).
-- [x] Weather features (lagged only) — added and evaluated; found not to help
-      onion at a weekly horizon (reported honestly).
-- [~] **Data widening (partial).** Tomato/Potato + Pune targets are configured
-      in `config.yaml` and weather is already fetched for all six markets; the
-      backfill is **resumable**. It fetched Tomato@169 (which validates DROP —
-      too sparse) before CEDA returned sustained HTTP 429 rate-limits, which
-      blocked the Pune markets (the ones most likely to add viable tomato/potato
-      pairs). Re-run `python src/backfill.py --from-year 2006` once the CEDA
-      quota resets; new pairs auto-join the pool **only if** `validate.py` marks
-      them OK (`pairs.py` reads the verdicts — nothing hardcoded).
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md): full design, decisions and execution order
+- [Data notes](docs/DATA_NOTES.md): API quirks and how each was handled
+- [Limitations](docs/LIMITATIONS.md): what this does and does not show
+
+## Data and credit
+
+Price and arrival data: [CEDA, Ashoka University](https://ceda.ashoka.edu.in/) Agri
+Market API, a cleaned mirror of Agmarknet (Ministry of Agriculture & Farmers Welfare).
+Used under CEDA's terms; please credit the Centre for Economic Data & Analysis, Ashoka
+University. Weather: [Open-Meteo](https://open-meteo.com/) historical archive.
+
+## License
+
+Code is released under the [MIT License](LICENSE). The data is not covered by it.

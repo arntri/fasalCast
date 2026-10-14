@@ -34,7 +34,6 @@ weights. Sensitivity (+/- perturbation) is the intended robustness check.
 """
 
 import numpy as np
-import pandas as pd
 
 MIN_COVERAGE = 0.60
 

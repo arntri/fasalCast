@@ -2,8 +2,8 @@
 # Per-commodity live download feed. Every cached_call() writes ONE file into
 # data/probe/ per NEW api request, so file count = downloads landed and the
 # newest file's age = "is this crop pulling right now".
-#   watch -n 1 -d bash ~/mandi-ews/watch_downloads.sh
-cd "$(dirname "$0")" || exit 1
+#   watch -n 1 -d bash scripts/watch_downloads.sh
+cd "$(dirname "$0")/.." || exit 1
 now=$(date +%s)
 
 # commodity id -> name (mirrors CROPS in src/select_markets.py)

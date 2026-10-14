@@ -12,11 +12,11 @@
 #   4. Combine the parquet panels once every shard finishes.
 #
 # Usage:
-#   ./run_backfill_fleet.sh                 # keyfile defaults to ./backfill_keys.env
-#   ./run_backfill_fleet.sh mykeys.env      # one CEDA key per line; # and blank lines ignored
-#   FORCE_OVER_CEILING=1 ./run_backfill_fleet.sh   # backfill even if over the 12k ceiling
+#   scripts/run_backfill_fleet.sh                 # keyfile defaults to ./backfill_keys.env
+#   scripts/run_backfill_fleet.sh mykeys.env      # one CEDA key per line; # and blank lines ignored
+#   FORCE_OVER_CEILING=1 scripts/run_backfill_fleet.sh   # backfill even if over the 12k ceiling
 set -uo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 keyfile="${1:-backfill_keys.env}"
 [[ -f "$keyfile" ]] || { echo "keyfile not found: $keyfile  (one CEDA key per line)"; exit 1; }

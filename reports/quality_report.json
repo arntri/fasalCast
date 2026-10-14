@@ -1,0 +1,99 @@
+{
+  "files": [
+    "panel_daily.parquet"
+  ],
+  "rows_in_scope": 13508,
+  "coercion_issues": {},
+  "name_variants": {
+    "market": {
+      "market": [
+        "market_169",
+        "market_2484",
+        "market_2488",
+        "market_4750"
+      ]
+    },
+    "commodity": {}
+  },
+  "duplicates": {
+    "duplicate_rows": 0,
+    "duplicate_keys_with_conflicting_prices": 0
+  },
+  "pairs": {
+    "market_169 | Onion": {
+      "rows": 4336,
+      "date_start": "2006-01-02",
+      "date_end": "2025-10-30",
+      "coverage_ex_sunday": 0.698,
+      "longest_gap_days": 83,
+      "zero_arrival_days": 0,
+      "null_arrivals": 47,
+      "modal_price_out_of_bounds": 0,
+      "min_gt_max": 0,
+      "modal_outside_minmax": 0,
+      "daily_jumps_gt_threshold": 5,
+      "possible_unit_level_shift": true,
+      "VIABLE_FOR_MODELING": true
+    },
+    "market_169 | Tomato": {
+      "rows": 485,
+      "date_start": "2006-08-22",
+      "date_end": "2022-06-15",
+      "coverage_ex_sunday": 0.098,
+      "longest_gap_days": 810,
+      "zero_arrival_days": 0,
+      "null_arrivals": 2,
+      "modal_price_out_of_bounds": 0,
+      "min_gt_max": 0,
+      "modal_outside_minmax": 0,
+      "daily_jumps_gt_threshold": 7,
+      "possible_unit_level_shift": true,
+      "VIABLE_FOR_MODELING": false
+    },
+    "market_2484 | Onion": {
+      "rows": 3654,
+      "date_start": "2006-01-02",
+      "date_end": "2025-10-30",
+      "coverage_ex_sunday": 0.589,
+      "longest_gap_days": 274,
+      "zero_arrival_days": 0,
+      "null_arrivals": 60,
+      "modal_price_out_of_bounds": 0,
+      "min_gt_max": 0,
+      "modal_outside_minmax": 0,
+      "daily_jumps_gt_threshold": 4,
+      "possible_unit_level_shift": true,
+      "VIABLE_FOR_MODELING": false
+    },
+    "market_2488 | Onion": {
+      "rows": 3611,
+      "date_start": "2006-01-30",
+      "date_end": "2025-10-30",
+      "coverage_ex_sunday": 0.584,
+      "longest_gap_days": 139,
+      "zero_arrival_days": 0,
+      "null_arrivals": 46,
+      "modal_price_out_of_bounds": 0,
+      "min_gt_max": 0,
+      "modal_outside_minmax": 0,
+      "daily_jumps_gt_threshold": 3,
+      "possible_unit_level_shift": true,
+      "VIABLE_FOR_MODELING": false
+    },
+    "market_4750 | Onion": {
+      "rows": 1422,
+      "date_start": "2020-05-15",
+      "date_end": "2025-10-30",
+      "coverage_ex_sunday": 0.832,
+      "longest_gap_days": 35,
+      "zero_arrival_days": 0,
+      "null_arrivals": 63,
+      "modal_price_out_of_bounds": 0,
+      "min_gt_max": 0,
+      "modal_outside_minmax": 0,
+      "daily_jumps_gt_threshold": 0,
+      "possible_unit_level_shift": true,
+      "VIABLE_FOR_MODELING": true
+    }
+  }
+}

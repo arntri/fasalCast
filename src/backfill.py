@@ -99,7 +99,8 @@ def main():
 
     RAW.mkdir(parents=True, exist_ok=True)
     if args.combine_only:
-        combine("prices"); combine("quantities")
+        combine("prices")
+        combine("quantities")
         return
 
     cfg = yaml.safe_load(open(args.config))

@@ -204,26 +204,13 @@ class LgbmResidual(LgbmForecaster):
 MODELS = {"seasonal_naive": seasonal_naive, "persistence": persistence}
 # ML models are registered in __main__ (they need the precomputed feature table).
 
-# ---- Flag-focused operating point: the quantile-flag head --------------------
-# `lgbm_quantile_flags` is NOT a regression model. It swaps the two mean
-# regressors for two LightGBM QUANTILE regressors whose predictions are
-# deliberately biased toward the tail the SPOILAGE flag targets — arrivals at the
-# high decile, price at the low decile — so the compound "high arrivals AND low
-# price" flag can actually reach the tail and fire. Because those predictions are
-# biased on purpose, its MAE/sMAPE are meaningless and are reported as "—"; only
-# its flag P/R/F1 are scored. The head is SPOILAGE-specific (opposite tails from
-# shortage), so its shortage cell is reported "n/a".
-#
-# ANTI-TUNING DISCLOSURE (α is NOT searched on test folds):
-#   The α are pinned to the flag's OWN defining deciles. SPOILAGE fires when
-#   arrivals exceed the trailing p90 AND price falls below the trailing p10 —
-#   exactly the 0.90 / 0.10 that trailing_thresholds() uses. So α_arr=0.90 and
-#   α_prc=0.10 fall straight out of the flag definition; there is no free
-#   hyperparameter to overfit. As a further guard, whether this head reaches the
-#   tail was only ever inspected on the EARLIEST `VAL_SPLIT_FRAC` of folds (the
-#   frozen validation region); the later folds — the reported test region — never
-#   informed the choice. report() prints the concrete split-boundary cutoff date
-#   so the frozen region is auditable and no one can claim test-fold tuning.
+# ---- Quantile-flag head (spoilage-specific) ---------------------------------
+# `lgbm_quantile_flags` swaps the mean regressors for quantile regressors biased
+# toward the spoilage tail (arrivals high, price low), so only its flag P/R/F1 are
+# scored; MAE/sMAPE are shown "-" and the shortage cell "n/a".
+# Anti-tuning: alpha is pinned to the flag's own deciles (the 0.90 / 0.10 that
+# trailing_thresholds() uses), and was only inspected on the earliest
+# VAL_SPLIT_FRAC of folds. report() prints the split date so this is auditable.
 FLAG_ALPHA_ARR, FLAG_ALPHA_PRC = 0.90, 0.10
 VAL_SPLIT_FRAC = 0.60
 BASELINES = {"seasonal_naive", "persistence"}
@@ -269,7 +256,8 @@ def smape(a, p):
 
 
 def prf(actual, pred):
-    tp = int((actual & pred).sum()); fp = int((~actual & pred).sum())
+    tp = int((actual & pred).sum())
+    fp = int((~actual & pred).sum())
     fn = int((actual & ~pred).sum())
     prec = tp / (tp + fp) if tp + fp else float("nan")
     rec = tp / (tp + fn) if tp + fn else float("nan")
@@ -338,8 +326,10 @@ def walk_forward(panel, min_train_days=730, step_days=7, pairs_filter=None):
 
 def _summarize(name, folds):
     df = pd.DataFrame(folds)
-    sa = np.concatenate(df.spoil_actual); sp = np.concatenate(df.spoil_pred)
-    ha = np.concatenate(df.short_actual); hp = np.concatenate(df.short_pred)
+    sa = np.concatenate(df.spoil_actual)
+    sp = np.concatenate(df.spoil_pred)
+    ha = np.concatenate(df.short_actual)
+    hp = np.concatenate(df.short_pred)
     p1, r1, f1, n1 = prf(pd.Series(sa), pd.Series(sp))
     p2, r2, f2, n2 = prf(pd.Series(ha), pd.Series(hp))
     # SCALE ASSERTION: predicted and actual arrivals must share the weekly-total
@@ -365,7 +355,8 @@ def report(results, out_path="reports/model_comparison.md", meta=None):
             continue
         s = _summarize(name, folds)
         summaries.append(s)
-        p1, r1, f1, n1 = s["spoil"]; p2, r2, f2, n2 = s["short"]
+        p1, r1, f1, n1 = s["spoil"]
+        p2, r2, f2, n2 = s["short"]
         flag_only = name in FLAG_ONLY_MODELS
         print(f"\n[{name}] {s['folds']} folds  (arrivals scale-check ratio={s['scale_ratio']:.2f})"
               + ("  [flag-only: MAE/sMAPE not meaningful]" if flag_only else ""))
@@ -494,9 +485,9 @@ def _write_markdown(summaries, out_path, meta=None):
             "regression MAE/sMAPE are omitted (`—`): a quantile forecast is "
             "deliberately biased and a good MAE would be the wrong thing to want.")
         lines.append(
-            f"\n- **α is not tuned on test folds.** α_arr=0.90 / α_prc=0.10 are the "
-            f"flag's *own* defining deciles (the 0.90/0.10 `trailing_thresholds()` "
-            f"uses) — there is no free hyperparameter to overfit.")
+            "\n- **α is not tuned on test folds.** α_arr=0.90 / α_prc=0.10 are the "
+            "flag's *own* defining deciles (the 0.90/0.10 `trailing_thresholds()` "
+            "uses) — there is no free hyperparameter to overfit.")
         boundary = meta.get("quantile_val_boundary")
         n_frozen = meta.get("n_folds_frozen")
         if boundary is not None:
@@ -510,7 +501,8 @@ def _write_markdown(summaries, out_path, meta=None):
                 f"`evaluate.py`, not hand-set.")
         if mean is not None:
             mp, mr, mf, mn = mean["spoil"]
-            fmt = lambda x: "—" if x != x else f"{x:.2f}"
+            def fmt(x):
+                return "—" if x != x else f"{x:.2f}"
             # Verdict is DERIVED from the numbers, not asserted. Three regimes:
             #  qr > 0        -> recovered some recall the mean regressor never had;
             #  qr == 0, fired -> reached the tail (fired flags) but 0/qn correct;

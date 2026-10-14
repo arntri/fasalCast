@@ -1,5 +1,20 @@
-# India Food Access Watch — Full Architecture
-### Nationwide early-warning system for local food-access shocks in Indian wholesale markets
+# FasalCast / India Food Access Watch — Architecture
+### Early-warning system for local food-access shocks in Indian wholesale markets
+
+> **Implementation status (read first).** This is the design document; not all of it is built.
+>
+> | Stage | Status |
+> |---|---|
+> | Ingestion, cleaning, validation (3.1, 3.3) | Built, tested |
+> | Market selection + state qualification (3.2) | Built; run complete |
+> | Backfill at scale (5.2) | **About 10% done** (rate-limit and key-expiry bound) |
+> | Stress index (3.4) `stress.py`, `basket.py` | Built, tested; district basket scores 0 days until more crops land |
+> | Episodes (3.5) `episodes.py` | Built; 81 market-crop episodes on cached data |
+> | Forecasting layer (3.6) | Built for onion only, on weekly price/arrival targets (not yet on stress targets) |
+> | Early-warning evaluation (3.7) `warning_eval.py` | **Not built** |
+> | Onion intervention table (5.6) | Not started |
+>
+> See [LIMITATIONS.md](LIMITATIONS.md) for the honest picture.
 
 Status: architecture v1 (pivot from FasalCast phase 1), amended by the
 Scope-Correction (crop groups, state qualification, coverage guard).

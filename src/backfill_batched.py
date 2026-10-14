@@ -200,11 +200,8 @@ class Fleet:
 
             fn = client.prices if kind == "prices" else client.quantities
             t0 = time.monotonic()
-            # Pace from request START, not completion: the hourly quota counts
-            # requests issued, so time spent waiting on a slow (or 60s-timing-out)
-            # call already counts toward the interval. Adding the interval after
-            # the fact would stretch a 504 cycle to 152s and silently cut each
-            # key from ~39 req/hr to ~24.
+            # Pace from request START: the hourly quota counts requests issued,
+            # so slow or timed-out calls already use up their interval.
             next_ok = t0 + PER_KEY_INTERVAL
             try:
                 data = fn(g["commodity_id"], g["state_id"], g["district_ids"],

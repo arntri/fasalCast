@@ -11,9 +11,9 @@
 #     or a long outage) or a wall-clock cap, then combine whatever landed.
 # Fully resumable: kill it anytime and re-run; cached chunks are free.
 #
-# Usage:  ./run_to_completion.sh backfill_keys.env
+# Usage:  scripts/run_to_completion.sh backfill_keys.env
 set -uo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 keyfile="${1:-backfill_keys.env}"
 [[ -f "$keyfile" ]] || { echo "keyfile not found: $keyfile"; exit 1; }

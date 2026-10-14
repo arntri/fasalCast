@@ -2,14 +2,14 @@
 # Run one crop-shard of the market-selection density probe.
 # Usage:
 #   export CEDA_API_KEY='<your-key>'
-#   ./run_shard.sh 3        # one crop id
-#   ./run_shard.sh 7,49     # Red Gram: both candidate ids
+#   scripts/run_shard.sh 3        # one crop id
+#   scripts/run_shard.sh 7,49     # Red Gram: both candidate ids
 set -uo pipefail
 
-crops="${1:?usage: ./run_shard.sh <crop-ids>   e.g.  ./run_shard.sh 3   or   ./run_shard.sh 7,49}"
+crops="${1:?usage: scripts/run_shard.sh <crop-ids>   e.g.  scripts/run_shard.sh 3   or   scripts/run_shard.sh 7,49}"
 : "${CEDA_API_KEY:?CEDA_API_KEY not exported — run: export CEDA_API_KEY='...'}"
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 mkdir -p logs
 log="logs/shard_c${crops//,/_}.log"
 
