@@ -13,6 +13,7 @@ Covered:
   6. Basket coverage guard: a district-day is scored only if >= 60% of basket
      weight is present; below that it is NaN with scored=False.
   7. Rice/Paddy are one group but never averaged at price level.
+  8. Stress index + hot-week flags are trailing-only (truncation invariance).
 """
 
 import sys
@@ -28,6 +29,8 @@ from pairs import viable_pairs                                    # noqa: E402
 from features import make_features, default_cutoffs, HORIZON, HEAVY_RAIN_MM  # noqa: E402
 import evaluate as ev                                            # noqa: E402
 import basket as bk                                              # noqa: E402
+import stress as sx                                              # noqa: E402
+import episodes as epi                                           # noqa: E402
 
 PANEL = pd.read_parquet(ROOT / "data/panel_daily.parquet")
 PANEL["date"] = pd.to_datetime(PANEL["date"])
@@ -174,6 +177,29 @@ def test_rice_paddy_group_stress_not_price():
     return "paddy+rice share one group; combined at stress level only"
 
 
+def test_stress_truncation_invariant():
+    """Recomputing on data cut at T must reproduce every value dated <= T:
+    if the index ever peeked at the future, truncation would change it."""
+    g = PANEL[(PANEL.market_id == 169) & (PANEL.commodity_id == 23)][["date", "modal_price", "arrivals"]]
+    cut = pd.Timestamp("2015-06-30")
+    full = sx.series_components(g)
+    part = sx.series_components(g[g.date <= cut])
+    cols = ["price_z", "arrival_deficit", "momentum"]
+    a, b = full.loc[:cut, cols], part.loc[:cut, cols].reindex(full.loc[:cut].index)
+    assert a.notna().sum().min() > 500, "test needs real coverage"
+    diff = (a - b).abs().max().max()
+    assert diff < 1e-9 or pd.isna(diff), f"stress changed when future was removed (max diff {diff})"
+    # composite + weekly hot flags, excluding the (partial) final week
+    fc = sx.composite(full.assign(dispersion=np.nan)).loc[:cut]
+    pc = sx.composite(part.assign(dispersion=np.nan)).loc[:cut]
+    wf, wp = epi.weekly(fc), epi.weekly(pc)
+    hf, _ = epi.hot_weeks(wf)
+    hp, _ = epi.hot_weeks(wp)
+    n = len(wp) - 1
+    assert (hf.iloc[:n].values == hp.iloc[:n].values).all(), "hot-week flags use future data"
+    return f"{int(a.notna().sum().min())}+ rows/component identical after truncation at {cut.date()}; {n} hot-week flags identical"
+
+
 TESTS = [
     ("viable_pairs matches report / excludes DROP", test_viable_pairs_matches_report),
     ("no leakage: feature sources <= cutoff", test_no_leakage_feature_sources),
@@ -182,6 +208,7 @@ TESTS = [
     ("weather features trailing-only", test_weather_features_trailing_only),
     ("basket 60% coverage guard", test_basket_coverage_guard),
     ("rice/paddy group at stress level", test_rice_paddy_group_stress_not_price),
+    ("stress+episodes trailing-only", test_stress_truncation_invariant),
 ]
 
 
