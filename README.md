@@ -49,7 +49,7 @@ folds, 2008 to 2025**, 6 spoilage events, 35 shortage events. All numbers come f
 | `lgbm_weather` | 254 | 20,003 | 0.58 / 0.43 / 0.49 |
 | `lgbm_residual` (post-hoc, exploratory) | 198 | **19,965** | 0.53 / 0.46 / 0.49 |
 
-**How to read this honestly**
+**Technicalities**
 
 - LightGBM beats the *seasonal-naive* baseline by a wide margin (price MAE -73%,
   arrivals MAE -48%, shortage F1 0.04 to 0.55), but seasonal-naive is a weak baseline.
