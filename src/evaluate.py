@@ -62,6 +62,26 @@ def seasonal_naive(history, pairs, cutoff):
                                         "pred_arrivals", "pred_price"])
 
 
+def persistence(history, pairs, cutoff):
+    """Naive no-skill baseline: next week = the week just ended (last 7 days:
+    mean price, summed arrivals). Fallback = last 14 observed rows. Strictly
+    trailing (<= cutoff). A model that cannot beat this has learned nothing."""
+    preds = []
+    for (m, c) in pairs:
+        g = history[(history.market_id == m) & (history.commodity_id == c)]
+        src = g[g.date > cutoff - pd.Timedelta(days=7)]
+        if src.empty:
+            src = g.tail(7)
+        if src.empty:
+            continue
+        preds.append({"market_id": m, "commodity_id": c,
+                      "pred_arrivals": src["arrivals"].sum() if len(src) >= 3
+                      else src["arrivals"].mean() * 6,
+                      "pred_price": src["modal_price"].mean()})
+    return pd.DataFrame(preds, columns=["market_id", "commodity_id",
+                                        "pred_arrivals", "pred_price"])
+
+
 class LgbmForecaster:
     """Two LightGBM regressors (next-week arrivals, next-week mean price) over the
     trailing feature table from features.py.
@@ -147,7 +167,7 @@ class LgbmForecaster:
         return out.reset_index(drop=True)
 
 
-MODELS = {"seasonal_naive": seasonal_naive}
+MODELS = {"seasonal_naive": seasonal_naive, "persistence": persistence}
 # ML models are registered in __main__ (they need the precomputed feature table).
 
 # ---- Flag-focused operating point: the quantile-flag head --------------------
@@ -172,6 +192,7 @@ MODELS = {"seasonal_naive": seasonal_naive}
 #   so the frozen region is auditable and no one can claim test-fold tuning.
 FLAG_ALPHA_ARR, FLAG_ALPHA_PRC = 0.90, 0.10
 VAL_SPLIT_FRAC = 0.60
+BASELINES = {"seasonal_naive", "persistence"}
 FLAG_ONLY_MODELS = {"lgbm_quantile_flags"}   # regression MAE/sMAPE not meaningful
 
 
@@ -373,14 +394,14 @@ def _write_markdown(summaries, out_path, meta=None):
                      "to the flag's tail); `n/a` shortage = spoilage-specific "
                      "operating point, see below.*")
 
-    if base is not None:
-        lines.append("\n## Improvement vs baseline (seasonal_naive)\n")
+    for base in [x for x in summaries if x["name"] in BASELINES]:
+        lines.append("\n## Improvement vs baseline (" + base["name"] + ")\n")
         lines.append("Negative Δ = lower error = better. Verdict is derived from "
                      "the numbers, not asserted.\n")
         lines.append("| model | Δ price MAE | Δ arrivals MAE | Δ shortage F1 | verdict |")
         lines.append("|---|--:|--:|--:|:--|")
         for s in summaries:
-            if s["name"] == "seasonal_naive" or s["name"] in FLAG_ONLY_MODELS:
+            if s["name"] in BASELINES or s["name"] in FLAG_ONLY_MODELS:
                 continue
             dp = s["mae_price"] - base["mae_price"]
             da = s["mae_arr"] - base["mae_arr"]

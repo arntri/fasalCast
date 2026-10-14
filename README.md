@@ -32,7 +32,8 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
 | model | price MAE | price sMAPE | arrivals MAE | arrivals sMAPE | spoilage P/R/F1 | shortage P/R/F1 |
 |---|--:|--:|--:|--:|:--:|:--:|
 | `seasonal_naive` (baseline) | 935 | 57.1% | 38,670 | 65.8% | 0.00/0.00/— | 0.05/0.03/0.04 |
-| `lgbm` | **250** | **14.5%** | **20,067** | **44.9%** | —/0.00/— | **0.63/0.49/0.55** |
+| `persistence` (naive baseline) | **190** | **10.9%** | 20,183 | **42.6%** | 0.17/0.17/0.17 | 0.48/0.37/0.42 |
+| `lgbm` | 250 | 14.5% | **20,067** | 44.9% | —/0.00/— | **0.63/0.49/0.55** |
 | `lgbm_weather` | 254 | 14.8% | 20,003 | 44.6% | —/0.00/— | 0.58/0.43/0.49 |
 | `lgbm_quantile_flags` | — | — | — | — | 0.00/0.00/— | n/a |
 
@@ -41,9 +42,14 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
 deliberately biased and shown `—`, and it does not target shortage (`n/a`). See
 the spoilage bullet below and `reports/model_comparison.md`.)
 
-- **LightGBM beats the baseline decisively** on both regression targets
-  (price MAE −73%, arrivals MAE −48%) and lifts shortage-flag F1 from 0.04 to
-  **0.55**.
+- **LightGBM beats the seasonal-naive baseline decisively** (price MAE −73%,
+  arrivals MAE −48%, shortage F1 0.04 → **0.55**), but seasonal-naive is a weak
+  baseline. Against the stronger **persistence** baseline (next week = last
+  week) the picture is mixed, and reported as found: LightGBM **loses on price**
+  (MAE 250 vs 190), is **level on arrivals** (20,067 vs 20,183, −1%), and wins
+  only on the shortage flag (F1 0.55 vs 0.42, on 35 events). Persistence also
+  catches 1 of 6 spoilage events (F1 0.17) where the mean LightGBM catches none.
+  The honest claim is therefore *flag-quality* gains, not price-forecast gains.
 - **Weather does not materially help.** Lagged rain/temperature features move
   the numbers within noise (price MAE +4, arrivals MAE −64, shortage F1 −0.06
   vs plain `lgbm`). For onion at a weekly horizon the price/arrival
