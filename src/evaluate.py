@@ -109,6 +109,7 @@ class LgbmForecaster:
     NUM_ROUNDS = 400
     K_RETRAIN = 26
     MIN_TRAIN_ROWS = 100          # cold start: no ML predictions until this many
+    CLIP_LOW = 0                  # level models can't go negative; residual subclass overrides
 
     def __init__(self, feats, k_retrain=K_RETRAIN, arr_params=None, prc_params=None):
         feats = feats.reset_index(drop=True).copy()
@@ -161,10 +162,43 @@ class LgbmForecaster:
         out = pd.DataFrame({
             "market_id": rows.market_id.astype(int).values,
             "commodity_id": rows.commodity_id.astype(int).values,
-            "pred_arrivals": np.clip(self._m_arr.predict(X), 0, None),
-            "pred_price": np.clip(self._m_prc.predict(X), 0, None),
+            "pred_arrivals": np.clip(self._m_arr.predict(X), self.CLIP_LOW, None),
+            "pred_price": np.clip(self._m_prc.predict(X), self.CLIP_LOW, None),
         })
         return out.reset_index(drop=True)
+
+
+class LgbmResidual(LgbmForecaster):
+    """POST-HOC variant (added AFTER persistence was found to beat plain lgbm on
+    price -- disclosed as such, params unchanged, nothing tuned): LightGBM learns
+    the CHANGE from the persistence-style anchor instead of the level.
+        price   = price_roll7_mean + f(x)
+        arrivals = 7 * arr_roll7_mean + g(x)
+    so it starts from the strongest naive forecast and only has to add skill."""
+
+    CLIP_LOW = -np.inf            # residuals may be negative; clip the SUM at 0 below
+
+    def __init__(self, feats, **kw):
+        feats = feats.reset_index(drop=True).copy()
+        base_p = feats["price_roll7_mean"]
+        base_a = feats["arr_roll7_mean"] * 7
+        self._base = {(t, int(m), int(c)): (bp, ba) for t, m, c, bp, ba in zip(
+            feats.cutoff, feats.market_id, feats.commodity_id, base_p, base_a)}
+        feats["target_price"] = feats["target_price"] - base_p
+        feats["target_arrivals"] = feats["target_arrivals"] - base_a
+        super().__init__(feats, **kw)
+
+    def __call__(self, history, pairs, cutoff):
+        out = super().__call__(history, pairs, cutoff)
+        if out.empty:
+            return out
+        bp = [self._base[(cutoff, int(m), int(c))] for m, c in
+              zip(out.market_id, out.commodity_id)]
+        out["pred_price"] = np.clip(out["pred_price"].values
+                                    + np.array([b[0] for b in bp]), 0, None)
+        out["pred_arrivals"] = np.clip(out["pred_arrivals"].values
+                                       + np.array([b[1] for b in bp]), 0, None)
+        return out
 
 
 MODELS = {"seasonal_naive": seasonal_naive, "persistence": persistence}
@@ -531,6 +565,7 @@ if __name__ == "__main__":
 
     feats = make_features(panel, cutoffs)
     MODELS["lgbm"] = LgbmForecaster(feats)
+    MODELS["lgbm_residual"] = LgbmResidual(feats)   # post-hoc, see class docstring
 
     # lgbm + weather (Task 4): only if the weather panel has been fetched.
     wx_path = Path("data/weather_daily.parquet")

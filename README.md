@@ -33,7 +33,8 @@ Restricted to pairs that pass `validate.py` (Onion @ **Lasalgaon 169** and
 |---|--:|--:|--:|--:|:--:|:--:|
 | `seasonal_naive` (baseline) | 935 | 57.1% | 38,670 | 65.8% | 0.00/0.00/— | 0.05/0.03/0.04 |
 | `persistence` (naive baseline) | **190** | **10.9%** | 20,183 | **42.6%** | 0.17/0.17/0.17 | 0.48/0.37/0.42 |
-| `lgbm` | 250 | 14.5% | **20,067** | 44.9% | —/0.00/— | **0.63/0.49/0.55** |
+| `lgbm_residual` (post-hoc) | 198 | 12.2% | **19,965** | 44.8% | —/0.00/— | 0.53/0.46/0.49 |
+| `lgbm` | 250 | 14.5% | 20,067 | 44.9% | —/0.00/— | **0.63/0.49/0.55** |
 | `lgbm_weather` | 254 | 14.8% | 20,003 | 44.6% | —/0.00/— | 0.58/0.43/0.49 |
 | `lgbm_quantile_flags` | — | — | — | — | 0.00/0.00/— | n/a |
 
@@ -50,6 +51,11 @@ the spoilage bullet below and `reports/model_comparison.md`.)
   only on the shortage flag (F1 0.55 vs 0.42, on 35 events). Persistence also
   catches 1 of 6 spoilage events (F1 0.17) where the mean LightGBM catches none.
   The honest claim is therefore *flag-quality* gains, not price-forecast gains.
+  A **post-hoc** attempt to close the gap (`lgbm_residual`: LightGBM predicts the
+  change from the persistence anchor; params unchanged, nothing tuned, added
+  *after* seeing the persistence result) gets price MAE to 198 — still not below
+  persistence's 190 — and arrivals 19,965 (−1%). It is disclosed as exploratory,
+  not a headline model.
 - **Weather does not materially help.** Lagged rain/temperature features move
   the numbers within noise (price MAE +4, arrivals MAE −64, shortage F1 −0.06
   vs plain `lgbm`). For onion at a weekly horizon the price/arrival
