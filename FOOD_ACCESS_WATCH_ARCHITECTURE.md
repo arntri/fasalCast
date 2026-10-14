@@ -1,7 +1,8 @@
 # India Food Access Watch — Full Architecture
 ### Nationwide early-warning system for local food-access shocks in Indian wholesale markets
 
-Status: architecture v1 (pivot from FasalCast phase 1).
+Status: architecture v1 (pivot from FasalCast phase 1), amended by the
+Scope-Correction (crop groups, state qualification, coverage guard).
 Everything below is grounded in the proven FasalCast pipeline and the verified
 realities of the CEDA API. Sections marked [DECIDED] are settled; [DISCOVER]
 requires a cheap probe before locking.
@@ -58,13 +59,32 @@ design.
 Backfill cost = pairs × years × 2 endpoints. At ~1 req/s with failures,
 budget phase A at **≤ 12,000 chunks (~2–4 days of background fetching)**.
 
-- **Basket (8 crops):** Rice, Wheat, Onion, Potato, Tomato, Red Gram (tur),
-  Bengal Gram (chana), Mustard. Rationale: the actual poor-household plate —
-  cereals + vegetables + pulses + oilseed. [ids: DISCOVER for the last 4]
-- **Geography (phase A): 6 states, ~40–50 mandis total:** Maharashtra, Uttar
-  Pradesh, Madhya Pradesh, West Bengal, Karnataka, Bihar. Selection of mandis
-  is AUTOMATED, not hand-picked (see 3.2). Phase B expands after modeling
-  starts.
+- **Basket (8 crop GROUPS):** rice, wheat, onion, potato, tomato, red gram
+  (tur), bengal gram (chana), mustard. Rationale: the actual poor-household
+  plate — cereals + vegetables + pulses + oilseed. The basket unit is the
+  crop GROUP (config.yaml `crop_groups`), not the raw commodity:
+  `rice = {Rice 3, Paddy(Dhan)(Common) 2}`, `redgram = {Red Gram 7, Arhar(Tur)
+  49}`, all others 1:1. See 3.4.
+- **Geography (phase A): states selected by qualification probe (see
+  `reports/state_qualification.md` and 3.2.2), not hand-picked.** Result:
+  Maharashtra, Uttar Pradesh, Madhya Pradesh, West Bengal (dense originals)
+  + Chhattisgarh and Rajasthan (qualified candidates). Selection of mandis
+  within a state is AUTOMATED (see 3.2). Phase B expands after modeling starts.
+  - **Selection criterion includes poverty relevance, explicitly.** The mission
+    is food-access monitoring, so poor / food-insecure states must stay in
+    scope rather than be swapped for data-rich richer ones. Candidates were
+    chosen for poverty relevance (Odisha, Chhattisgarh; fallbacks Jharkhand,
+    Rajasthan) and then had to pass a data-density rule — relevance gets a
+    state probed, evidence gets it admitted.
+  - **Excluded, with structural reasons (measured in the 2024 density probe):**
+    - **Bihar** — APMC (regulated mandi) Act repealed in 2006, so the mandi
+      network is structurally thin: 4 of 8 crop groups absent; e.g. wheat is
+      reported by 6 mandis vs 286 in MP.
+    - **Karnataka** — most trade flows through the state's own e-market
+      platform (ReMS / Unified Market Platform), bypassing central Agmarknet:
+      ~37–68 reporting days per mandi per year vs 150–290 in kept states.
+    - Odisha and Jharkhand were probed and did NOT qualify (Odisha 4/8 groups;
+      Jharkhand 0 dense mandis). Reported, not hidden.
 - **Years:** 2008→present (older years proven sparse; validate.py decides
   per-pair usable spans anyway).
 - Not every crop trades at every mandi — expect ~⅓–½ of the pair grid to be
@@ -156,6 +176,36 @@ Karnataka + Bihar not started). Wheat shard resumes the missing states; the
 other 7 crops are fresh. Key handling + the non-interactive-shell gotcha are in
 `ceda_client.py` (env `CEDA_API_KEY`).
 
+#### 3.2.2 State qualification step (Scope-Correction T3) [DECIDED]
+`select_markets.py` also acts as the state-qualification probe. Rule and caps
+are PRE-REGISTERED (fixed before probing):
+- **Rule:** a state QUALIFIES if **>= 5 mandis** show dense reporting
+  (**>= 150 price records** in the probe year, 2024) together covering **>= 5
+  of 8 crop groups** statewide.
+- **Hard caps per state:** top 5 districts by cereal market count, top 3 mandis
+  per district, ONE year, PRICES only; every `/markets` response cached.
+- **Candidates:** Odisha, Chhattisgarh. Fallbacks (probed only if a candidate
+  fails): Jharkhand, Rajasthan. Bihar and Karnataka dropped up front (2.3).
+- **Output:** `reports/state_qualification.md` — state, poverty-relevance tag,
+  mandis probed, dense mandis, groups covered, QUALIFIED yes/no. This table,
+  not opinion, decides phase-A geography.
+- Runs in the background alongside the main backfill; never blocks it.
+- **Per-state group resolution:** `resolve_groups` keeps the denser member of a
+  multi-id group PER STATE (Rice wins MH/UP/WB; Paddy wins MP).
+- Pair health (T5): `pair_health.py` tracks per-pair fetch failure rates in
+  `logs/pair_stats.json`; backfills order troubled pairs (>= 25% failures over
+  >= 4 fetches) after healthy ones, and print the worst offenders at the end of
+  each run, so a pathological commodity/state is caught from numbers.
+
+#### Red gram policy [DECIDED]
+Red gram fetches proved pathologically slow, so it sorts LAST in every
+backfill ordering (`pair_health.DEPRIORITISED_COMMODITIES`) and must never block
+or slow the main backfill. **Decision rule:** if red gram's validated coverage
+is still unusable when phase-A modeling starts, phase A ships with **Bengal
+Gram as the sole pulse** and red gram becomes phase B. (A separate
+budget-capped red-gram background run is the intended mechanism; as of
+2026-10-14 only the ordering is implemented.)
+
 ### 3.3 Clean + validate (exists; runs unchanged at scale)
 clean.py aggregation + units conversion as-is. validate.py verdicts gate
 every pair; only VIABLE pairs enter modeling. New at scale: per-state summary
@@ -173,9 +223,20 @@ of pass rates in the quality report.
   chosen a priori, stated in the docstring; NEVER fit to episodes — that's
   the anti-dredging line)
 Basket aggregation: `src/basket.py` — district/state index = CPI-style fixed
-weights over crops (document the weight source; approximate CPI food weights
-are fine if cited as approximations). Missing-crop handling: renormalize
-weights over available crops, flag coverage % per district-day.
+weights over crop GROUPS (approximate staple-expenditure shares, pre-registered,
+never fit to episodes). Rules:
+- **Crop groups:** `rice = {Rice 3, Paddy(Dhan)(Common) 2}` (MP reports Paddy,
+  not Rice); other groups 1:1 (red gram = {7, 49} catalogue duplicates). Each
+  state contributes whichever member it reports.
+- **Stress is computed per SERIES (market, commodity)** against its own
+  trailing history, so mixed members are safe by construction. Raw paddy and
+  rice prices are NEVER averaged (paddy is unmilled — milling-margin level
+  difference); groups aggregate only at the unit-free stress level.
+- **Missing-group handling:** renormalise weights over groups present.
+- **Coverage guard:** a district-day is scored ONLY if groups present carry
+  **>= 60%** of the full-basket weight. Below that the index is NaN with
+  `scored=False` — never a silently thin index. `coverage` is always reported.
+  Locked by invariant tests (`tests/test_invariants.py`).
 
 ### 3.5 Episode definition (new — the evaluation ground truth)
 `src/episodes.py`, mechanical and pre-registered BEFORE any evaluation runs:
@@ -227,6 +288,11 @@ Secondary: same lead-time readout against the onion intervention table
 ---
 
 ## 5. Execution order (Claude Code task sequence)
+0. **Scope-Correction (applied, in order):** T1 crop groups (done) → T3 state
+   qualification (done; geography = MH/UP/MP/WB + CG + RJ) → T4 basket
+   coverage guard (done) → T5 pair-health ordering + failure-rate report (done)
+   → red-gram de-prioritisation (ordering done; separate capped run pending).
+   The chunk budget for T1 below must be RE-COMPUTED for the 6 settled states.
 1. **T1 — commodity/market discovery + budget plan:** /commodities ids for the
    8 staples; run select_markets.py probe; emit proposed backfill_targets +
    total chunk count. STOP and report if > 12k chunks.
@@ -268,6 +334,14 @@ budget · validate.py gates every pair · resumable everything.
 - **Weights/threshold subjectivity** — mitigated by pre-registration and by
   reporting sensitivity (vary weights ±, show episode table stability) —
   cheap robustness check, big credibility gain.
+- **Blind spots correlate with need.** The most food-insecure states often
+  have the weakest market-data infrastructure. Bihar is effectively
+  unmonitorable through Agmarknet (mandi network dismantled in 2006), Karnataka
+  routes much trade through its own platform, and Odisha/Jharkhand failed the
+  density rule. The system is therefore least able to see exactly where food
+  insecurity is highest. This is a reportable finding, not a footnote: phase-A
+  results describe the monitorable states and must not be read as national
+  coverage.
 - **Episodes ≠ hunger** — the index measures market stress as a *proxy* for
   food-access deterioration. State this plainly; do not claim to measure
   hunger directly.
